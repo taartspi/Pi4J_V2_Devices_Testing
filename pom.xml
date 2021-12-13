@@ -3,18 +3,50 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- MAVEN ARTIFACT INFORMATION -->
-    <groupId>com.pi4j.plugin.microchip</groupId>
-    <artifactId>pi4j-plugin-microchip</artifactId>
+    <groupId>com.pi4j.plugin.BMP280</groupId>
+    <artifactId>pi4j-plugin-BMP280</artifactId>
     <name>Pi4J :: PLUGIN   :: TemperatureSensor I/O Provider</name>
     <description>Pi4J Plugin for the TemperatureSensor I/O Provider</description>
     <packaging>jar</packaging>
     <version>0.0.1</version>
 
+
+    <!-- DISTRIBUTION REPOSITORIES -->
+    <distributionManagement>
+        <downloadUrl>https://v2.pi4j.com/download</downloadUrl>
+        <repository>
+            <id>sonatype-oss-staging</id>
+            <name>Sonatype Open Source Maven Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-oss-snapshots</id>
+            <name>Sonatype Open Source Maven Snapshots Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <!-- DEPENDENCY REPOSITORIES -->
+    <repositories>
+        <repository>
+            <id>oss-snapshots-repo</id>
+            <name>Sonatype OSS Maven Repository</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
     <!-- PROPERTIES -->
     <properties>
 
         <!-- DEPENDENCY VERSIONS -->
-        <pi4j.version>2.0</pi4j.version>
+        <pi4j.version>2.2.0-SNAPSHOT</pi4j.version>
         <slf4j.version>1.7.30</slf4j.version>
 
         <!-- PROJECT ENCODING PROPERTIES -->
