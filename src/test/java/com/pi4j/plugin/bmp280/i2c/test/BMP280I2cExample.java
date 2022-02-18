@@ -3,15 +3,16 @@ package com.pi4j.plugin.bmp280.i2c.test;
 
 import com.pi4j.Pi4J;
 import com.pi4j.io.i2c.I2C;
+import com.pi4j.io.sensor.Sensor;
 import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
-import com.pi4j.plugin.temperaturesensor.bmp280.BMP280;
+import com.pi4j.plugin.temperaturesensor.bmp280.BMP280Device;
 import com.pi4j.plugin.temperaturesensor.bmp280.BMP280Provider;
 
 
 public class BMP280I2cExample {
 
-    private static final int BMP280_I2C_ADDRESS = BMP280.DEFAULT_ADDRESS; // 0x20
-    private static final int BMP280_I2C_BUS = BMP280.DEFAULT_BUS;
+    private static final int BMP280_I2C_ADDRESS = BMP280Device.DEFAULT_ADDRESS; // 0x20
+    private static final int BMP280_I2C_BUS = BMP280Device.DEFAULT_BUS;
 
     /**
      * Sample application using MCP23017 GPIO expansion chip.
@@ -47,8 +48,8 @@ public class BMP280I2cExample {
         System.out.println("----------------------------------------------------------");
 
         // create I2C instance for communication with BMP180
-        I2C bmp180_i2c = null; //pi4j.i2c().create(BMP180_I2C_BUS, BMP180_I2C_ADDRESS);
 
+        I2C bmp180_i2c = null; //pi4j.i2c().create(BMP180_I2C_BUS, BMP180_I2C_ADDRESS);
 
         // if we don't have an immediate reference to the actual provider,
         // we can obtain it from the Pi4J context using it's ID string
@@ -56,23 +57,40 @@ public class BMP280I2cExample {
 
 
 
-        provider.setup(pi4j,BMP280_I2C_BUS, BMP280_I2C_ADDRESS);
+        var bmpDev =  provider.setup(pi4j,provider,BMP280_I2C_BUS, BMP280_I2C_ADDRESS);
 
 
-        float temp = provider.temperatureC();
+       bmpDev.initSensor();
+        System.out.println("----------------------------------------------------------");
 
-        var BMP280I2cConfig = I2C.newConfigBuilder(pi4j)
+        double reading1 = bmpDev.temperatureC();
+        System.out.println(" Temperatue C = " + reading1);
+
+       double reading2 = bmpDev.temperatureF();
+        System.out.println(" Temperatue F = " + reading2);
+
+        double press1 = bmpDev.pressurePa();
+        System.out.println(" Pressure Pa = " + press1);
+
+        double press2 = bmpDev.pressureIn();
+        System.out.println(" Pressure InHg = " + press2);
+
+        double press3 = bmpDev.pressureMb();
+        System.out.println(" Pressure mb = " + press3);
+
+
+        var BMP280I2cConfig = Sensor.newConfigBuilder(pi4j)
                 .id("Sensor")
-                .name("BMP280Sensor")
-                .device(BMP280_I2C_ADDRESS)
                 .bus(BMP280_I2C_BUS)
+                .address(BMP280_I2C_ADDRESS)
+                .name("BMP280Sensor")
                 .provider(BMP280Provider.ID)
                 .build();
 
         var bmpSensor = provider.create(BMP280I2cConfig);
 
 
-        var bus = BMP280I2cConfig.bus();
+
 
 
         // Shutdown Pi4J
