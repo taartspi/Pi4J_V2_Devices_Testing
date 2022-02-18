@@ -2,18 +2,19 @@ package com.pi4j.plugin.temperaturesensor.bmp280;
 
 
 import com.pi4j.context.Context;
-import com.pi4j.internal.TemperatureSensorIntf;
 import com.pi4j.io.i2c.I2C;
 import com.pi4j.io.i2c.I2CProvider;
+import com.pi4j.io.sensor.SensorConfig;
+import com.pi4j.io.sensor.SensorProvider;
 import com.pi4j.plugin.temperaturesensor.bmp280.impl.BMP280ProviderImpl;
 
 
-public interface BMP280Provider extends I2CProvider, TemperatureSensorIntf {
+public interface BMP280Provider extends SensorProvider {
 
       /** Constant <code>NAME="BMP.I2C_PROVIDER_NAME"</code> */
-    String NAME = BMP280.I2C_PROVIDER_NAME;
+    String NAME = BMP280Device.I2C_PROVIDER_NAME;
     /** Constant <code>ID="BMP.I2C_PROVIDER_ID"</code> */
-    String ID = BMP280.I2C_PROVIDER_ID;
+    String ID = BMP280Device.I2C_PROVIDER_ID;
 
     /*  Begin device register definitions.        */
     static final int  temp_xlsb  = 0xFC;
@@ -26,8 +27,23 @@ public interface BMP280Provider extends I2CProvider, TemperatureSensorIntf {
     static final int  ctrl_meas  = 0xF4;
     static final int  status     = 0xF3;
     static final int  reset      = 0xE0;
-    static final int  chipId         = 0xD0;
+    static final int  chipId     = 0xD0;
 
+
+    // errata register definitions
+    static final int reg_dig_t1     = 0x88;
+    static final int reg_dig_t2     = 0x8A;
+    static final int reg_dig_t3     = 0x8C;
+
+    static final int reg_dig_p1     = 0x8E;
+    static final int reg_dig_p2     = 0x90;
+    static final int reg_dig_p3     = 0x92;
+    static final int reg_dig_p4     = 0x94;
+    static final int reg_dig_p5     = 0x96;
+    static final int reg_dig_p6     = 0x98;
+    static final int reg_dig_p7     = 0x9A;
+    static final int reg_dig_p8     = 0x9C;
+    static final int reg_dig_p9     = 0x9E;
 
     // register contents
     static final int  reset_cmd  = 0xB6;  // written to reset
@@ -37,25 +53,34 @@ public interface BMP280Provider extends I2CProvider, TemperatureSensorIntf {
     static final int  stat_update  = 0x01;  // set, NVM being copied
 
     // Pertaining to 0xF4 ctrl_meas register
-    static final int  tempOverSample = 0xE0;  // mask bits 5,6,7
-    static final int  presOverSample = 0x1C;  // mask bits 2,3,4
-    static final int  pwrMode        = 0x03;  // mask bits 0,1
+    static final int  tempOverSampleMsk = 0xE0;  // mask bits 5,6,7
+    static final int  presOverSampleMsk = 0x1C;  // mask bits 2,3,4
+    static final int  pwrModeMsk        = 0x03;  // mask bits 0,1
 
 
     // Pertaining to 0xF5 config register
-    static final int  inactDuration  = 0xE0;  // mask bits 5,6,7
-    static final int  iirFlt         = 0x1C;  // mask bits 2,3,4
-    static final int  enableSpi      = 0x01;  // mask bits 0
+    static final int  inactDurationMsk  = 0xE0;  // mask bits 5,6,7
+    static final int  iirFltMsk         = 0x1C;  // mask bits 2,3,4
+    static final int  enableSpiMsk      = 0x01;  // mask bits 0
 
     // Pertaining to 0xF7 0xF8 0xF9 press  register
-    static final int  pressMsb       = 0xFF;  // mask bits 0 - 7
-    static final int  pressLsb       = 0xFF;  // mask bits 0 - 7
-    static final int  pressXlsb      = 0x0F;  // mask bits 0 - 3
+    static final int  pressMsbMsk       = 0xFF;  // mask bits 0 - 7
+    static final int  pressLsbMsk       = 0xFF;  // mask bits 0 - 7
+    static final int  pressXlsbMsk      = 0x0F;  // mask bits 0 - 3
 
     // Pertaining to 0xFA 0xFB 0xFC temp  register
-    static final int  tempMsb       = 0xFF;  // mask bits 0 - 7
-    static final int  tempLsb       = 0xFF;  // mask bits 0 - 7
-    static final int  tempXlsb      = 0x0F;  // mask bits 0 - 3
+    static final int  tempMsbMsk       = 0xFF;  // mask bits 0 - 7
+    static final int  tempLsbMsk        = 0xFF;  // mask bits 0 - 7
+    static final int  tempXlsbMsk      = 0x0F;  // mask bits 0 - 3
+    static final int  idValueMsk       = 0x58;   // expected chpId value
+
+    // For the control reg 0xf4
+    static final int ctl_forced         = 0x01;
+    static final int ctl_tempSamp1      = 0x20;   // oversample *1
+    static final int ctl_pressSamp1     = 0x04;   // oversample *1
+
+
+    BMP280Device setup(Context pi4j, BMP280Provider provider, int bmp280I2cBus, int bmp280I2cAddress);
 
 
     /**
@@ -66,11 +91,6 @@ public interface BMP280Provider extends I2CProvider, TemperatureSensorIntf {
     static BMP280Provider newInstance() {
         return new BMP280ProviderImpl();
     }
-
-
-    public float temperatureC();
-
-    void setup(Context pi4j, int bmp180I2cBus, int bmp180I2cAddress);
 
 
 
