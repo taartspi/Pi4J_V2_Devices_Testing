@@ -28,7 +28,7 @@
 
     <!-- DEPENDENCY REPOSITORIES -->
     <repositories>
-        <repository>
+        <!--repository>
             <id>oss-snapshots-repoTA</id>
             <name>Sonatype OSS Maven RepositoryTA</name>
             <url>file:////home/pi/Pi4J_V2/Pi4J_V2_BASE/pi4j-core/target</url>
@@ -38,7 +38,7 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
+        </repository-->
 
         <repository>
             <id>oss-snapshots-repo</id>
@@ -76,6 +76,9 @@
         <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-resource-plugin.version>3.2.0</maven-resource-plugin.version>
+        <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+        <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+        <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
 
     </properties>
 
@@ -85,7 +88,7 @@
         <dependency>
             <!--groupId>com.pi4j</groupId-->
             <groupId>com.pi4j</groupId>
-            <artifactId>pi4j-coreTA</artifactId>
+            <artifactId>pi4j-core</artifactId>
             <version>2.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -141,7 +144,15 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven-jar-plugin.version}</version>
             </plugin>
-
+            <!-- BUILD THE FINAL JAR FILE IN THE /target/distribution PATH -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/distribution</outputDirectory>
+                </configuration>
+            </plugin>
             <!-- INCLUDE SOURCE JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -156,7 +167,52 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <!-- COPY ANY RUNTIME SCRIPTS TO THE /target/distribution PATH  -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <target>
+                                <copy todir="${project.build.directory}/distribution" overwrite="true" flatten="true">
+                                    <fileset dir="assets" includes="*.sh"> </fileset>
+                                </copy>
+                                <chmod dir="${project.build.directory}/distribution" perm="ugo+rx" includes="**/*.sh"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--  DOWNLOAD RUNTIME DEPENDENCIES  -->
+            <!-- COPY ANY RUNTIME SCRIPTS TO THE /target/distribution PATH  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-assets</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <copy todir="${project.build.directory}/distribution" overwrite="true" flatten="true">
+                                    <fileset dir="assets" includes="*.sh"> </fileset>
+                                </copy>
+                                <chmod dir="${project.build.directory}/distribution" perm="ugo+rx" includes="**/*.sh"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- INCLUDE RESOURCES -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -166,7 +222,30 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
+            <!-- DEFAULT JAR EXECUTABLE CLASS -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>module-step</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>--module-path</argument>
+                        <argument>${project.build.directory}/distribution</argument>
+                        <argument>--module</argument>
+                        <!-- <argument>com.pi4j.devices.tca9548/com.pi4j.devices.tca9548.SampleTca9548App</argument>  -->
+                        <argument>com.pi4j.plugin.temperaturesensor.bmp280</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
             <!-- INCLUDE JAVADOC JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -178,6 +257,29 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- DOWNLOAD RUNTIME DEPENDENCIES -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/distribution</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <excludeTransitive>false</excludeTransitive>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
