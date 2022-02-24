@@ -211,12 +211,12 @@ public class BMP280Device implements TemperatureSensorIntf {
 
     /**
      *
-     * Rest BMP280 chip to remove and other applications configuration details.
+     * Reset BMP280 chip to remove any previous applications configuration details.
      *
      * Configure BMP280 for 1x oversamplimg and single measurement.
      *
-     * Read and store all factory set conversion data
-     * Read registers 0xf7 - 0xFC in single read to ensure all the data pertains to
+     * Read and store all factory set conversion data.
+     * Read measure registers 0xf7 - 0xFC in single read to ensure all the data pertains to
      * a single  measurement.
      *
      * Use conversion data and measure data to calculate temperature in C and pressure in Pa.
