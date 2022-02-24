@@ -28,19 +28,7 @@
 
     <!-- DEPENDENCY REPOSITORIES -->
     <repositories>
-        <!--repository>
-            <id>oss-snapshots-repoTA</id>
-            <name>Sonatype OSS Maven RepositoryTA</name>
-            <url>file:////home/pi/Pi4J_V2/Pi4J_V2_BASE/pi4j-core/target</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository-->
-
-        <repository>
+      <repository>
             <id>oss-snapshots-repo</id>
             <name>Sonatype OSS Maven Repository</name>
             <url>https://oss.sonatype.org/content/groups/public</url>
