@@ -2,6 +2,12 @@
 
 Implement Java Interface and provider for Temperature Sensor using a BMP280
 
+!!!  NOTE !!!
+This requires an update to the pi4j-core. At this time the update has not been reviewed or merged. So, if you
+want an implementation that doesn't require core updates, see: https://github.com/Pi4J/pi4j-device-tca9548
+The package com.pi4j.devices.bmp280 only requires the released <pi4j.version>2.2.0-SNAPSHOT</pi4j.version>. 
+Also, this package does not use any other code within my repo.
+
 The example program has the assumption the BMP280 is connected to Pi bus 1, and the device is configured 
 to operate as device address 0x76.  If these assumptions are not possible, modify the BMP280I2cExample program
 to use your specific bus and device address.
