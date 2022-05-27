@@ -41,6 +41,16 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>oss-snapshots-M2-repo</id>
+            <name>Sonatype OSS Maven2 Repository</name>
+            <url>https://mvnrepository.com/artifact/org.apache.felix/maven-bundle-plugin</url>
+        </repository>
+        <repository>
+            <id>sonatype-oss-staging</id>
+            <name>Sonatype Open Source Maven Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
      </repositories>
 
 
@@ -80,13 +90,12 @@
             <artifactId>pi4j-v2-devices</artifactId>
             <version>0.0.1</version>
         </dependency>
-
-
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-plugin-pigpio</artifactId>
+            <version>${pi4j.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>

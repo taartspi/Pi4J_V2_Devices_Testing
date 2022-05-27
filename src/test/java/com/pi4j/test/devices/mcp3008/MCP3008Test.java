@@ -36,12 +36,16 @@ package com.pi4j.test.devices.mcp3008;
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.devices.mcp3008.MCP3008;
+import com.pi4j.exception.LifecycleException;
 import com.pi4j.io.spi.Spi;
 import com.pi4j.io.spi.SpiBus;
 import com.pi4j.io.spi.SpiChipSelect;
 import com.pi4j.io.spi.SpiMode;
 import com.pi4j.util.Console;
-
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+//Params:    -p 0x0 -t trace -vref 5.0 -c 0x01
+//
 
 public class MCP3008Test {
 
@@ -66,14 +70,28 @@ public class MCP3008Test {
         Context pi4j = Pi4J.newAutoContext();
         boolean doAll = true;
         short pinNumber = 0;
+        double vref = 0;
 
         SpiChipSelect chipSelect = SpiChipSelect.CS_0;
         SpiBus spiBus = SpiBus.BUS_0;
 
         console.title("<-- The Pi4J V2 Project Extension  -->", "MCP3008App");
         String helpString = " parms: -p HEX value pinToRead  <if not supplied all pins read    -c HEX value chip select " +
-                "-s HEX value SPI #  -t  trace values : \"trace\", \"debug\", \"info\", \"warn\", \"error\" \n " +
+                "-s HEX value SPI #    -vref decimal reference voltage  -t  trace values : \"trace\", \"debug\", \"info\", \"warn\", \"error\" \n " +
                 " or \"off\"  Default \"info\"";
+
+        Signal.handle(new Signal("INT"), new SignalHandler() {
+            public void handle(Signal sig) {
+                System.out.println("Performing ctl-C shutdown");
+                try {
+                    pi4j.shutdown();
+                } catch (LifecycleException e) {
+                    e.printStackTrace();
+                }
+                //Thread.dumpStack();
+                System.exit(2);
+            }
+        });
 
         String traceLevel = "info";
         for (int i = 0; i < args.length; i++) {
@@ -96,6 +114,10 @@ public class MCP3008Test {
                 String a = args[i + 1];
                 spiBus = SpiBus.getByNumber(Short.parseShort(a.substring(2), 16));
                 i++;
+            }else if (o.contentEquals("-vref")) { // reference voltage
+                String a = args[i + 1];
+                i++;
+                vref = Float.parseFloat(a);
             } else if (o.contentEquals("-t")) { // device address
                 String a = args[i + 1];
                 i++;
@@ -123,19 +145,8 @@ public class MCP3008Test {
         console.println("----------------------------------------------------------");
         pi4j.providers().describe().print(System.out);
         System.out.println("----------------------------------------------------------");
-        var spiConfig = Spi.newConfigBuilder(pi4j)
-                .id("SPI" + spiBus + " " + chipSelect)
-                .name("A/D converter")
-                .bus(spiBus)
-                .chipSelect(chipSelect)
-                .baud(Spi.DEFAULT_BAUD)
-                .mode(SpiMode.MODE_0)
-                .provider("pigpio-spi")
-                .build();
 
-        var spiDevice = pi4j.create(spiConfig);
-        MCP3008 spiCls = new MCP3008(spiDevice, pinCount, console, traceLevel);
-
+        MCP3008 spiCls = new MCP3008(pi4j, spiBus, chipSelect, pinCount, console, traceLevel,  vref);
         spiCls.displayProgramID();
         spiCls.displayMCP3008State(doAll, pinNumber);
 
