@@ -14,6 +14,7 @@ module com.pi4j.devices.test {
     //requires com.pi4j.plugin.linuxfs;
     requires com.pi4j.devices;
     requires jdk.unsupported;
+    requires com.pi4j.plugin.linuxfs;
 
 
 }

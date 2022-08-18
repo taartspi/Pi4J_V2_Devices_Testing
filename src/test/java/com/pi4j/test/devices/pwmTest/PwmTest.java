@@ -41,6 +41,19 @@ public class PwmTest {
                 .build();
 
         this.pwm = this.pi4j.create(cfg);
+
+        var another = Pwm.newConfigBuilder(pi4j)
+                .id("BCM" + address)
+                .name("Buzzer")
+                .address(19)
+                .pwmType(PwmType.HARDWARE)
+                .provider("pigpio-pwm")
+                .initial(0)
+                .shutdown(0)
+                .build();
+    console.println("another =:" + another);
+
+
     }
 
 
