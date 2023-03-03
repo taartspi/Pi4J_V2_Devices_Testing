@@ -5,6 +5,8 @@ import com.pi4j.context.Context;
 import com.pi4j.devices.mcp3008.MCP3008;
 import com.pi4j.exception.LifecycleException;
 import com.pi4j.io.pwm.Pwm;
+import com.pi4j.io.pwm.PwmConfig;
+import com.pi4j.io.pwm.PwmConfigBuilder;
 import com.pi4j.io.pwm.PwmType;
 import com.pi4j.io.spi.SpiBus;
 import com.pi4j.io.spi.SpiChipSelect;
@@ -16,59 +18,51 @@ public class PwmTest {
     private final Context pi4j;
     private final Console console;
     private final int address;
+    private final int duty;
+    private final int freq;
+
+    private String pwmType = "H";
     private Pwm pwm;
 
     /**
      * <p>Constructor for MonitorInterrupt.</p>
      */
-    public PwmTest(Context pi4j, Console console, int gpio, int duty, int freq, int duration) {
+    public PwmTest(Context pi4j, Console console, String pwmType, int gpio, int duty, int freq) {
         super();
         this.pi4j = pi4j;
         this.console = console;
         this.address = gpio;
+        this.duty = duty;
+        this.freq = freq;
+        this.pwmType = pwmType;
         this.init();
     }
 
-    private void init() {
-        var cfg = Pwm.newConfigBuilder(pi4j)
-                .id("BCM" + this.address)
-                .name("LED")
-                .address(this.address)
-                .pwmType(PwmType.HARDWARE)
-                .provider("pigpio-pwm")
-                .initial(0)
-                .shutdown(0)
-                .build();
-
-        this.pwm = this.pi4j.create(cfg);
-
-        var another = Pwm.newConfigBuilder(pi4j)
-                .id("BCM" + address)
-                .name("Buzzer")
-                .address(19)
-                .pwmType(PwmType.HARDWARE)
-                .provider("pigpio-pwm")
-                .initial(0)
-                .shutdown(0)
-                .build();
-    console.println("another =:" + another);
 
 
-    }
-
-
-    public void PwmActivate(int duty, int freq, long duration) {
-
-        this.pwm.on(duty, freq);
-        if (duration > 0) {
-            try {
-                Thread.sleep(duration);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            this.pwm.off();
+    private void init(){
+        PwmType pinType = PwmType.SOFTWARE;
+        if(pwmType.equalsIgnoreCase("H")){
+            pinType = PwmType.HARDWARE;
         }
+        final PwmConfig config = PwmConfigBuilder.newInstance (pi4j)
+                .id ("BCM26")
+                .name ("PWM")
+                .address (this.address)
+                .pwmType(pinType)
+                .initial(this.duty)
+                .frequency(this.freq)
+                .provider ("pigpio-pwm")
+                .shutdown (0)
+                .frequency(this.freq)
+                 .build ();
+
+        pwm = pi4j.create (config);
+
     }
+
+
+
 
     /**
      * <p>main.</p>
@@ -84,10 +78,11 @@ public class PwmTest {
         int duty = 0;
         int freq = 1;
         int duration = 0;
+        String pwmType = "H";
 
 
         console.title("<-- The Pi4J V2 Project Extension  -->", "MCP3008App");
-        String helpString = " parms: -gpio  18 or 19,  -duty dutyCycle, -freq frequency, -duration milliSec";
+        String helpString = " parms: -type PwmType H S,  -gpio  18 or 19 [-t H},  -duty dutyCycle, -freq frequency";
 
         Signal.handle(new Signal("INT"), new SignalHandler() {
             public void handle(Signal sig) {
@@ -105,35 +100,54 @@ public class PwmTest {
 
         for (int i = 0; i < args.length; i++) {
             String o = args[i];
-            if (o.contentEquals("-gpio")) { // pin
+            if (o.contentEquals("-gpio")) {
                 String a = args[i + 1];
                 gpioNumber = Integer.parseInt(a.substring(0));
                 i++;
-                if ((gpioNumber != 18) & (gpioNumber != 19)) {
-                    console.println("  !!! Invalid Pin " + gpioNumber);
-                    console.println(helpString);
-                    System.exit(40);
-                }
-            } else if (o.contentEquals("-duty")) { // pin
+           } else if (o.contentEquals("-duty")) {
                 String a = args[i + 1];
                 duty = Integer.parseInt(a.substring(0));
                 i++;
-            } else if (o.contentEquals("-freq")) { // pin
+            } else if (o.contentEquals("-type")) {
+                String a = args[i + 1];
+                pwmType = a;
+                i++;
+            }else if (o.contentEquals("-freq")) {
                 String a = args[i + 1];
                 freq = Integer.parseInt(a.substring(0));
                 i++;
-            } else if (o.contentEquals("-duration")) { // pin
-                String a = args[i + 1];
-                duration = Integer.parseInt(a.substring(0));
-                i++;
-            } else if (o.contentEquals("-h")) {
+            }  else if (o.contentEquals("-h")) {
                 console.println(helpString);
                 System.exit(41);
             } else {
                 console.println("  !!! Invalid Parm " + o);
                 console.println(helpString);
-                System.exit(43);
+                System.exit(42);
             }
+        }
+
+        if ((pwmType.equalsIgnoreCase("H")) || (pwmType.equalsIgnoreCase("S"))) {
+            if (pwmType.equalsIgnoreCase("H")) {
+                // SOFTWARE PWM is supported on all GPIOs
+                if ((gpioNumber != 18) & (gpioNumber != 19)) {
+                    console.println("  !!! Invalid Pin " + gpioNumber  + " for PwmType");
+                    console.println(helpString);
+                    System.exit(43);
+                }
+            }
+            else if (pwmType.equalsIgnoreCase("S")) {
+                // SOFTWARE PWM is supported on all GPIOs
+                if ((gpioNumber == 18) & (gpioNumber == 19)) {
+                    console.println("  !!! Invalid Pin " + gpioNumber + " for PwmType");
+                    console.println(helpString);
+                    System.exit(44);
+                }
+            }
+        } else {
+            console.println("  !!! Invalid -type  pwmType");
+            console.println(helpString);
+            System.exit(45);
+
         }
 
 
@@ -144,9 +158,7 @@ public class PwmTest {
         pi4j.providers().describe().print(System.out);
         System.out.println("----------------------------------------------------------");
 
-        PwmTest pwm = new PwmTest(pi4j, console, gpioNumber, duty, freq, duration);
-
-        pwm.PwmActivate(duty, freq, duration);
+        PwmTest pwm = new PwmTest(pi4j, console, pwmType, gpioNumber, duty, freq);
 
 
         console.waitForExit();
