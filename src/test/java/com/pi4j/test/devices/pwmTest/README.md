@@ -36,7 +36,5 @@
 
 Parameter examples
 
-sudo -cp <>   -p <> -m com.pi4j.devices.test/com.pi4j.test.devices.pwmTest.PwmTest  -gpio 19   -duty 50 -freq 1 -duration 5000
+sudo java -cp <>   -p <> -m com.pi4j.devices.test/com.pi4j.test.devices.pwmTest.PwmTest -type H -gpio 19   -duty 50 -freq 1 
 
-
-sudo /usr/lib/jvm/java-11-openjdk-arm64/bin/java -javaagent:/home/pi/Tools/Intellij/idea-IC-221.5591.52/lib/idea_rt.jar=34143:/home/pi/Tools/Intellij/idea-IC-221.5591.52/bin -Dfile.encoding=UTF-8 -classpath /home/pi/.m2/repository/org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar -p /home/pi/.m2/repository/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar:/home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/test-classes:/home/pi/.m2/repository/com/pi4j/pi4j-library-pigpio/2.2.0-SNAPSHOT/pi4j-library-pigpio-2.2.0-20220505.120643-18.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-linuxfs/2.2.0-SNAPSHOT/pi4j-library-linuxfs-2.2.0-20220505.120646-18.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-linuxfs/2.2.0-SNAPSHOT/pi4j-plugin-linuxfs-2.2.0-SNAPSHOT.jar:/home/pi/.m2/repository/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar:/home/pi/.m2/repository/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar:/home/pi/.m2/repository/com/pi4j/pi4j-v2-devices/0.0.1/pi4j-v2-devices-0.0.1.jar:/home/pi/.m2/repository/com/pi4j/pi4j-core/2.2.0-SNAPSHOT/pi4j-core-2.2.0-20220505.120622-18.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-raspberrypi/2.2.0-SNAPSHOT/pi4j-plugin-raspberrypi-2.2.0-20220505.120658-18.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-pigpio/2.2.0-SNAPSHOT/pi4j-plugin-pigpio-2.2.0-SNAPSHOT.jar -m com.pi4j.devices.test/com.pi4j.test.devices.pwmTest.PwmTest
