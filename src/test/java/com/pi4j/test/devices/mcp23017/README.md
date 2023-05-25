@@ -19,3 +19,20 @@ Pi SDA          SDA 13      16   A1      Grd Pi
                     14      15   A0      Grd Pi
 
 
+
+
+CQRobot MCP23017
+
+Pi SCL                      Blue
+Pi SDA                      Green
+Pi Gnd                      Black
+Pi 3.3                      Red
+
+PA0  ++++LED--/\/\/\/\/\/----  Gnd pin
+
+I did no Ax jumpers  i2cdetect -y 1  shows I2C device address 0x27
+
+Per CQRobot spec
+/*the param can be 0 to 7,the default param is 7.means the dafault device address 0x27.
+
+Test case executes and LED blinks on/off as expected.

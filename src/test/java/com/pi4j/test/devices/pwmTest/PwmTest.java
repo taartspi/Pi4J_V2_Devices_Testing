@@ -2,7 +2,6 @@ package com.pi4j.test.devices.pwmTest;
 
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
-import com.pi4j.devices.mcp3008.MCP3008;
 import com.pi4j.exception.LifecycleException;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmConfig;
@@ -45,14 +44,15 @@ public class PwmTest {
         if(pwmType.equalsIgnoreCase("H")){
             pinType = PwmType.HARDWARE;
         }
+
         final PwmConfig config = PwmConfigBuilder.newInstance (pi4j)
                 .id ("BCM26")
                 .name ("PWM")
-                .address (this.address)
+                .address (0) //this.address)
                 .pwmType(pinType)
                 .initial(this.duty)
                 .frequency(this.freq)
-                .provider ("pigpio-pwm")
+                .provider ("linuxfs-pwm") // pigpio
                 .shutdown (0)
                 .frequency(this.freq)
                  .build ();

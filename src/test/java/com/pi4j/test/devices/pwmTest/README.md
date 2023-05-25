@@ -34,8 +34,30 @@
 #
 
 
+# enable PWM
+sudo mousepad /boot/config.txt
+
+dtoverlay=pwm-2chan
+
+# enable PWM
+dtoverlay=pwm,pin=18,func=2
+##dtoverlay=pwm-2chan
+
+/sys/class/pwm/pwmchip0 $ ls
+device  export  npwm  power  pwm0  pwm1  subsystem  uevent  unexport
+
+
 Parameter examples
 
 sudo java -cp <>   -p <> -m com.pi4j.devices.test/com.pi4j.test.devices.pwmTest.PwmTest -type H -gpio 19   -duty 50 -freq 1 
+
+linuxfs
+
+/usr/lib/jvm/java-1.11.0-openjdk-arm64/bin/java -javaagent:/home/pi/Tools/Intellij/idea-IC-222.4167.29/lib/idea_rt.jar=40105:/home/pi/Tools/Intellij/idea-IC-222.4167.29/bin -Dfile.encoding=UTF-8 -classpath /home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/classes:/home/pi/.m2/repository/net/java/dev/jna/jna/5.12.1/jna-5.12.1.jar:/home/pi/.m2/repository/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar -p /home/pi/.m2/repository/com/pi4j/pi4j-v2-devices/0.0.1/pi4j-v2-devices-0.0.1.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-pigpio/2.3.0-SNAPSHOT/pi4j-plugin-pigpio-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-linuxfs/2.3.0-SNAPSHOT/pi4j-library-linuxfs-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-core/2.3.0-SNAPSHOT/pi4j-core-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-linuxfs/2.3.0-SNAPSHOT/pi4j-plugin-linuxfs-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-pigpio/2.3.0-SNAPSHOT/pi4j-library-pigpio-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-raspberrypi/2.3.0-SNAPSHOT/pi4j-plugin-raspberrypi-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar:/home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/test-classes -m com.pi4j.devices.test/com.pi4j.test.devices.pwmTest.PwmTest -gpio 18 -duty 50 -freq 1 -type H
+
+
+
+/usr/lib/jvm/java-1.11.0-openjdk-arm64/bin/java -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:55585,suspend=y,server=n -javaagent:/home/pi/Tools/Intellij/idea-IC-222.4167.29/plugins/java/lib/rt/debugger-agent.jar -Dfile.encoding=UTF-8 -classpath /home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/classes:/home/pi/.m2/repository/net/java/dev/jna/jna/5.12.1/jna-5.12.1.jar:/home/pi/.m2/repository/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar:/home/pi/Tools/Intellij/idea-IC-222.4167.29/lib/idea_rt.jar -p /home/pi/.m2/repository/com/pi4j/pi4j-plugin-pigpio/2.3.0-SNAPSHOT/pi4j-plugin-pigpio-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-linuxfs/2.3.0-SNAPSHOT/pi4j-plugin-linuxfs-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-core/2.3.0-SNAPSHOT/pi4j-core-2.3.0-SNAPSHOT.jar:/home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/test-classes:/home/pi/.m2/repository/com/pi4j/pi4j-library-pigpio/2.3.0-SNAPSHOT/pi4j-library-pigpio-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-raspberrypi/2.3.0-SNAPSHOT/pi4j-plugin-raspberrypi-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar:/home/pi/.m2/repository/com/pi4j/pi4j-v2-devices/0.0.1/pi4j-v2-devices-0.0.1.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-linuxfs/2.3.0-SNAPSHOT/pi4j-library-linuxfs-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar:/home/pi/.m2/repository/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar -m com.pi4j.devices.test/com.pi4j.test.devices.pwmTest.PwmTest -gpio 18 -duty 50 -freq 1 -type H
+
 
 sudo /usr/lib/jvm/java-1.11.0-openjdk-arm64/bin/java -javaagent:/home/pi/Tools/Intellij/idea-IC-222.4167.29/lib/idea_rt.jar=40751:/home/pi/Tools/Intellij/idea-IC-222.4167.29/bin -Dfile.encoding=UTF-8 -classpath /home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/classes:/home/pi/.m2/repository/net/java/dev/jna/jna/5.12.1/jna-5.12.1.jar:/home/pi/.m2/repository/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar -p /home/pi/.m2/repository/com/pi4j/pi4j-plugin-pigpio/2.3.0-SNAPSHOT/pi4j-plugin-pigpio-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-pigpio/2.3.0-SNAPSHOT/pi4j-library-pigpio-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-core/2.3.0-SNAPSHOT/pi4j-core-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-linuxfs/2.3.0-SNAPSHOT/pi4j-library-linuxfs-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-raspberrypi/2.3.0-SNAPSHOT/pi4j-plugin-raspberrypi-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar:/home/pi/.m2/repository/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-linuxfs/2.3.0-SNAPSHOT/pi4j-plugin-linuxfs-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar:/home/pi/.m2/repository/com/pi4j/pi4j-v2-devices/0.0.1/pi4j-v2-devices-0.0.1.jar:/home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/test-classes -m com.pi4j.devices.test/com.pi4j.test.devices.pwmTest.PwmTest -gpio 19 -duty 50 -freq 1 -type H

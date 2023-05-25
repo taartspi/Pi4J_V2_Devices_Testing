@@ -19,7 +19,7 @@ public class MCP23017_App {
         private static final int GPIOB = 0x13;
 
         public static void main(String[] args) throws InterruptedException {
-            reset(0x20);
+            reset(0x27);
         }
 
         protected static void reset(int address) throws InterruptedException {
@@ -48,7 +48,7 @@ public class MCP23017_App {
                 System.out.println("GPIOA pin 0 driven high, LED on");
                 Thread.sleep(5000);
                 mcp23017Dev.writeRegister(GPIOA, getAsInteger("00000000"));
-                System.out.println("GPIOA pin 0 driven high, LED off");
+                System.out.println("GPIOA pin 0 driven low, LED off");
                 Thread.sleep(1000);
 
 
