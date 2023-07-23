@@ -1,0 +1,8 @@
+
+
+sudo /usr/lib/jvm/java-1.11.0-openjdk-arm64/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5009 -javaagent:/home/pi/Tools/Intellij/IdealC-2023.1.2/idea-IC-231.9011.34/plugins/java/lib/rt/debugger-agent.jar -Dfile.encoding=UTF-8 -classpath /home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/classes:/home/pi/.m2/repository/net/java/dev/jna/jna/5.12.1/jna-5.12.1.jar:/home/pi/.m2/repository/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar:/home/pi/Tools/Intellij/IdealC-2023.1.2/idea-IC-231.9011.34/lib/idea_rt.jar -p /home/pi/.m2/repository/com/pi4j/pi4j-core/2.3.0-SNAPSHOT/pi4j-core-2.3.0-SNAPSHOT.jar:/home/pi/Pi4J_V2/Pi4J_V2_Devices_Testing/target/test-classes:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-raspberrypi/2.3.0-SNAPSHOT/pi4j-plugin-raspberrypi-2.3.0-20230616.062941-8.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-pigpio/2.3.0-SNAPSHOT/pi4j-plugin-pigpio-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/com/pi4j/pi4j-v2-devices/0.0.1/pi4j-v2-devices-0.0.1.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-pigpio/2.3.0-SNAPSHOT/pi4j-library-pigpio-2.3.0-20230616.062924-9.jar:/home/pi/.m2/repository/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar:/home/pi/.m2/repository/com/pi4j/pi4j-library-linuxfs/2.3.0-SNAPSHOT/pi4j-library-linuxfs-2.3.0-20230616.062928-8.jar:/home/pi/.m2/repository/org/slf4j/slf4j-api/1.7.32/slf4j-api-1.7.32.jar:/home/pi/.m2/repository/com/pi4j/pi4j-plugin-linuxfs/2.3.0-SNAPSHOT/pi4j-plugin-linuxfs-2.3.0-SNAPSHOT.jar:/home/pi/.m2/repository/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar -m com.pi4j.devices.test/com.pi4j.test.devices.gpio.example.SimpleGpio
+
+
+
+
+
