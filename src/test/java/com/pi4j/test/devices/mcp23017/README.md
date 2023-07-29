@@ -9,9 +9,9 @@ openjdk version "11.0.18" 2023-01-17
                     4       25
                     5       24
                     6       23
-                    7       22                     330 ohm
+                    7       22   GPA1  -----   make/break c connection to 3.3
                     8       21   GPA0  ++++LED--/\/\/\/\/\/----  GRD Pi
-Pi 3.3          Vdd 9       20
+Pi 3.3          Vdd 9       20                       330 ohm
 Pi GRD          Vss 10      19   _____                      
                     11      18   RESET   3.3 Pi
 Pi SCL          SCK 12      17   A2      Grd Pi
@@ -28,11 +28,11 @@ Pi SDA                      Green
 Pi Gnd                      Black
 Pi 3.3                      Red
 
+PA1  Lead to connect/disconnect from 3.3v
 PA0  ++++LED--/\/\/\/\/\/----  Gnd pin
 
-I did no Ax jumpers  i2cdetect -y 1  shows I2C device address 0x27
+Use  i2cdetect -y 1  shows I2C device address to use in the program.
 
-Per CQRobot spec
-/*the param can be 0 to 7,the default param is 7.means the dafault device address 0x27.
 
 Test case executes and LED blinks on/off as expected.
+Strapping PA1 used to read low/high input state 
