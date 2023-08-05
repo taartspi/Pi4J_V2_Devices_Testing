@@ -67,6 +67,13 @@ public class MCP23017_App {
                 System.out.println("GPIOA pin 0 driven low, LED off");
                 Thread.sleep(1000);
 
+                mcp23017Dev.writeRegister(GPIOA, 0b00000011);
+                System.out.println("GPIOA pin 0  and 1  driven high, LEDs on");
+                Thread.sleep(5000);
+
+                mcp23017Dev.writeRegister(GPIOA, getAsInteger("00000100"));
+                System.out.println("GPIOA pin 3  driven high, LED 3 on");
+                Thread.sleep(5000);
 
                 // read current value of the IODIRA register
                 int currentVal = mcp23017Dev.readRegister(IODIRA);
