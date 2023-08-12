@@ -42,6 +42,17 @@
             </snapshots>
         </repository>
         <repository>
+            <id>oss-snapshots-repo</id>
+            <name>Sonatype OSS Maven Repository</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>oss-snapshots-M2-repo</id>
             <name>Sonatype OSS Maven2 Repository</name>
             <url>https://mvnrepository.com/artifact/org.apache.felix/maven-bundle-plugin</url>
