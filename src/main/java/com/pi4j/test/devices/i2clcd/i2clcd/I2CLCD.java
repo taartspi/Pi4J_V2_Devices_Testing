@@ -1,4 +1,4 @@
-package com.pi4j.test.devices.i2clcd;
+package com.pi4j.test.devices.i2clcd.i2clcd;
 
 import com.pi4j.io.i2c.I2C;
 

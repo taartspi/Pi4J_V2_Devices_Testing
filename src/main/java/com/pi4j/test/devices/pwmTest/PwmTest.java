@@ -52,7 +52,7 @@ public class PwmTest {
                 .pwmType(pinType)
                 .initial(this.duty)
                 .frequency(this.freq)
-                .provider ("linuxfs-pwm") // pigpio
+                .provider ("pigpio-pwm") // pigpio   linuxfs
                 .shutdown (0)
                 .frequency(this.freq)
                  .build ();
