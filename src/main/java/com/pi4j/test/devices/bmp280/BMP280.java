@@ -2,6 +2,7 @@ package com.pi4j.test.devices.bmp280;
 
 import com.pi4j.Pi4J;
 import com.pi4j.devices.bmp280.BMP280Device;
+import com.pi4j.devices.bmp280.BMP280DeviceI2C;
 import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
 import com.pi4j.util.Console;
 
@@ -41,7 +42,7 @@ public class BMP280 {
 
 
 
-        var bmpDev = new BMP280Device(pi4j, console, 1, 0x77, "info");
+        var bmpDev = new BMP280DeviceI2C(pi4j, console, 1, 0x77, "info");
         bmpDev.initSensor();
         console.println("  Dev I2C detail    " + bmpDev.i2cDetail());
         console.println("  Setup ----------------------------------------------------------");
