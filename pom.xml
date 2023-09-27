@@ -69,8 +69,8 @@
     <properties>
 
         <!-- DEPENDENCY VERSIONS -->
-        <pi4j.version>2.3.0</pi4j.version>
-        <slf4j.version>2.0.3-SNAPSHOT</slf4j.version>
+        <pi4j.version>2.3.0-SNAPSHOT</pi4j.version>
+        <slf4j.version>2.0.3</slf4j.version>
 
         <!-- PROJECT ENCODING PROPERTIES -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
