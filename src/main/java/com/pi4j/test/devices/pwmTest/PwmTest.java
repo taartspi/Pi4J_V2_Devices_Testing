@@ -48,11 +48,11 @@ public class PwmTest {
         final PwmConfig config = PwmConfigBuilder.newInstance (pi4j)
                 .id ("BCM26")
                 .name ("PWM")
-                .address (0) //this.address)
+                .address (0)// this.address)  //or 1 LED on gpio13  the second channel
                 .pwmType(pinType)
                 .initial(this.duty)
                 .frequency(this.freq)
-                .provider ("pigpio-pwm") // pigpio   linuxfs
+                .provider ("linuxfs-pwm") // pigpio   linuxfs
                 .shutdown (0)
                 .frequency(this.freq)
                  .build ();
@@ -60,7 +60,10 @@ public class PwmTest {
         pwm = pi4j.create (config);
 
     }
+/* linuxfs-pwm            Default ALT0  uses PWM0_0 gpio 12 and PWM0_1 gpio 13
 
+
+ */
 
 
 

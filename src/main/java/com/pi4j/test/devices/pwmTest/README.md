@@ -40,11 +40,80 @@ sudo mousepad /boot/config.txt
 dtoverlay=pwm-2chan
 
 # enable PWM
-dtoverlay=pwm,pin=18,func=2
-##dtoverlay=pwm-2chan
+sudo mousepad /boot/config.txt
+
+# normal for pwm tests
+#dtoverlay=pwm,pin=18,func=2
+
+# sys default  gpio 12 and 13 default alt0
+dtoverlay=pwm-2chan
 
 /sys/class/pwm/pwmchip0 $ ls
 device  export  npwm  power  pwm0  pwm1  subsystem  uevent  unexport
+
+
+# enable PWM     Single channel func=2 means alt5, which permits pin 18
+dtoverlay=pwm,pin=18,func=2
+
+Default uses 18 and 19    -2chan sets up func which is alt5
+##dtoverlay=pwm-2chan
+
+Use gpio12
+dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
+
+Name:   pwm
+Info:   Configures a single PWM channel
+Legal pin,function combinations for each channel:
+PWM0: 12,4(Alt0) 18,2(Alt5) 40,4(Alt0)            52,5(Alt1)
+PWM1: 13,4(Alt0) 19,2(Alt5) 41,4(Alt0) 45,4(Alt0) 53,5(Alt1)
+N.B.:
+1) Pin 18 is the only one available on all platforms, and
+it is the one used by the I2S audio interface.
+Pins 12 and 13 might be better choices on an A+, B+ or Pi2.
+2) The onboard analogue audio output uses both PWM channels.
+3) So be careful mixing audio and PWM.
+4) Currently the clock must have been enabled and configured
+by other means.
+Load:   dtoverlay=pwm,<param>=<val>
+Params: pin                     Output pin (default 18) - see table
+func                    Pin function (default 2 = Alt5) - see above
+clock                   PWM clock frequency (informational)
+
+
+Name:   pwm-2chan
+Info:   Configures both PWM channels
+Legal pin,function combinations for each channel:
+PWM0: 12,4(Alt0) 18,2(Alt5) 40,4(Alt0)            52,5(Alt1)
+PWM1: 13,4(Alt0) 19,2(Alt5) 41,4(Alt0) 45,4(Alt0) 53,5(Alt1)
+N.B.:
+1) Pin 18 is the only one available on all platforms, and
+it is the one used by the I2S audio interface.
+Pins 12 and 13 might be better choices on an A+, B+ or Pi2.
+2) The onboard analogue audio output uses both PWM channels.
+3) So be careful mixing audio and PWM.
+4) Currently the clock must have been enabled and configured
+by other means.
+Load:   dtoverlay=pwm-2chan,<param>=<val>
+Params: pin                     Output pin (default 18) - see table
+pin2                    Output pin for other channel (default 19)
+func                    Pin function (default 2 = Alt5) - see above
+func2                   Function for pin2 (default 2 = Alt5)
+clock                   PWM clock frequency (informational)
+
+#! /bin/sh
+# Export channel 0
+# Set the period 1,000,000 nS (1kHz)
+# Set the duty_cycle 50%
+# Enable the PWM signal
+# 2023-07-06
+
+cd /sys/class/pwm/pwmchip0
+echo 0 > export
+sleep 0.1
+echo 10000000 > pwm0/period
+echo  5000000 > pwm0/duty_cycle
+echo 1 > pwm0/enable
+echo 0 > /sys/class/pwm/pwmchip0/pwm0/enable can be used to stop PWM.
 
 
 Parameter examples
