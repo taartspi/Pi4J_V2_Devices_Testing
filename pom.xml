@@ -69,7 +69,7 @@
     <properties>
 
         <!-- DEPENDENCY VERSIONS -->
-        <pi4j.version>2.3.0-SNAPSHOT</pi4j.version>
+        <pi4j.version>2.5.0-SNAPSHOT</pi4j.version>
         <slf4j.version>2.0.3</slf4j.version>
 
         <!-- PROJECT ENCODING PROPERTIES -->
@@ -105,6 +105,11 @@
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-core</artifactId>
+            <version>${pi4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-plugin-gpiod</artifactId>
             <version>${pi4j.version}</version>
         </dependency>
         <dependency>
@@ -175,6 +180,7 @@
             </plugin>
             <!-- COPY ANY RUNTIME SCRIPTS TO THE /target/distribution PATH  -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>${maven-antrun-plugin.version}</version>
                 <executions>
