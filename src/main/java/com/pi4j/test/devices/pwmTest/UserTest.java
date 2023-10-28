@@ -58,8 +58,8 @@ public class UserTest {
     private static void initGPIOCM4()
     {
         var configPwm = Pwm.newConfigBuilder(pi4j)
-                .address(13)
-                .pwmType(PwmType.SOFTWARE)
+                .address(19)
+                .pwmType(PwmType.HARDWARE)
                 .provider("pigpio-pwm")
                 .initial(0)
                 .shutdown(0)
