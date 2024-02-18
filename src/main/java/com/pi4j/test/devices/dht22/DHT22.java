@@ -9,6 +9,10 @@ import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalOutputConfig;
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.gpio.digital.PullResistance;
+import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
+import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInputProvider;
+
+
 
     public class DHT22
     {
@@ -37,17 +41,22 @@ import com.pi4j.io.gpio.digital.PullResistance;
         {
             if (pi4j == null)
                 pi4j = Pi4J.newAutoContext();
+            System.out.println("PI4J PROVIDERS");
+            System.out.println("----------------------------------------------------------");
+            pi4j.providers().describe().print(System.out);
+            System.out.println("----------------------------------------------------------");
+
 
             cfgOut = DigitalOutput.newConfigBuilder(pi4j)
                     .address(22)
                     .initial(DigitalState.HIGH)
                     .shutdown(DigitalState.HIGH)
-                    .provider("pigpio-digital-output")
+                    .provider("gpiod-digital-output")   //   pigpio   gpiod
                     .build();
             cfgIn = DigitalInput.newConfigBuilder(pi4j)
-                    .address(22)
+                    .address(23)
                     .pull(PullResistance.OFF)
-                    .provider("pigpio-digital-input")
+                    .provider("gpiod-digital-input")
                     .build();
         }
         private DigitalInputConfig cfgIn = null;
