@@ -3,7 +3,16 @@ import com.pi4j.*;
         import com.pi4j.io.pwm.*;
         import com.pi4j.context.Context;
         import com.pi4j.io.gpio.digital.*;
-        import com.pi4j.library.pigpio.PiGpio;
+import com.pi4j.io.spi.SpiChipSelect;
+//import com.pi4j.library.pigpio.PiGpio;
+import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInputProvider;
+import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalOutputProvider;
+import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
+import com.pi4j.plugin.linuxfs.provider.pwm.LinuxFsPwmProvider;
+import com.pi4j.util.Console;
+import java.util.Scanner;
+
+
 
 public class UserTest {
     private static Pwm pwm = null;
@@ -12,40 +21,68 @@ public class UserTest {
     public static void main(String[] args) throws Exception
     {
         pi4j = Pi4J.newAutoContext();     //  remove var
-        initPiGpio();
-        initGPIOCM4();
-        System.out.println("pigpio pin13 before pin.on  actual  frequ  " +pwm.actualFrequency());
-        pwm.on(50, 200);
-        System.out.println("pigpio pin13 after pin.on  freq 200  actual  frequ  " +pwm.actualFrequency());
+      /*  pi4j = Pi4J.newContextBuilder().add(
+                LinuxFsI2CProvider.newInstance(),
+                LinuxFsPwmProvider.newInstance(2),
+                GpioDDigitalInputProvider.newInstance(),
+                GpioDDigitalOutputProvider.newInstance()).build();
+*/
+
+        var console = new Console();
+        System.out.println("----------------------------------------------------------");
+        System.out.println("PI4J PROVIDERS");
+        System.out.println("----------------------------------------------------------");
+        pi4j.providers().describe().print(System.out);
+        System.out.println("----------------------------------------------------------");
+
+        int address = 2;
+        //  initPiGpio();
+        for (int i = 0; i < args.length; i++) {
+            String o = args[i];
+            if (o.contentEquals("-a")) { // pin
+                String a = args[i + 1];
+                address = Short.parseShort(a.substring(0), 10);
+                i++;
+            } else {
+                console.println("  No valid Parm, -a address ");
+                System.exit(42);
+            }
+        }
+        initGPIOCM4(address);
+       // System.out.println("pigpio pin before pin.on  actual  frequ  " +pwm.actualFrequency());
+        pwm.on(50, 2);
+        System.out.println("linuxfs pin after pin.on  freq 2  actual  frequ  " +pwm.actualFrequency());
+ 
+        waitForInput(console);
+ 
+        pwm.off();
+        pwm.on(50, 10);
+        System.out.println("linuxfs pin after pin.on  freq 10  actual  frequ  " +pwm.actualFrequency());
+        waitForInput(console);
+ 
+         pwm.off();
+        pwm.on(50, 50);
+        System.out.println("linuxfs pin after pin.on  freq 50  actual  frequ  " +pwm.actualFrequency());
+ 
+        waitForInput(console);
+ 
         pwm.off();
         pwm.on(50, 100);
-        System.out.println("pigpio pin13 after pin.on  freq 100  actual  frequ  " +pwm.actualFrequency());
-         pwm.off();
-        pwm.on(50, 5000);
-        System.out.println("pigpio pin13 after pin.on  freq 5000  actual  frequ  " +pwm.actualFrequency());
+        System.out.println("linuxfs pin after pin.on  freq 100  actual  frequ  " +pwm.actualFrequency());
+        waitForInput(console);
+       
         pwm.off();
-        pwm.on(50, 10000);
-        System.out.println("pigpio pin13 after pin.on  freq 10000  actual  frequ  " +pwm.actualFrequency());
-
-        pwm.off();
-        pwm.on(50, 20000);
-        System.out.println("pigpio pin13 after pin.on  freq 20000  actual  frequ  " +pwm.actualFrequency());
-
-        pwm.off();
-        pwm.on(50, 50000);
-        System.out.println("pigpio pin13 after pin.on  freq 50000  actual  frequ  " +pwm.actualFrequency());
-
-        pwm.off();
-        pwm.on(50, 1);
-        System.out.println("pigpio pin13 after pin.on  freq 1  actual  frequ  " +pwm.actualFrequency());
-
-
-        while (true){
+        pwm.on(50, 10);
+        System.out.println("linuxfs pin after pin.on  freq 10  actual  frequ  " +pwm.actualFrequency());
+        waitForInput(console);
+ 
+        pi4j.shutdown();
+       while (true){
             // Timeout here?
         }
     }
 
-    private static void initPiGpio() {
+ /*   private static void initPiGpio() {
         try {
             var pigpio = PiGpio.newNativeInstance();
             pigpio.gpioCfgClock(2, 1, 0);  // leave clock using the PCM
@@ -55,14 +92,26 @@ public class UserTest {
             e.printStackTrace();
         }
     }
-    private static void initGPIOCM4()
+*/
+
+private static int waitForInput(Console console) {
+        int rval = 0;
+        Scanner scan = new Scanner(System.in);
+
+        console.println("Hit any key to continue");
+        scan.next();
+
+        return (rval);
+    }
+
+    private static void initGPIOCM4(int address)
     {
         var configPwm = Pwm.newConfigBuilder(pi4j)
-                .address(19)
+                .address(address)
                 .pwmType(PwmType.HARDWARE)
-                .provider("pigpio-pwm")
+                .provider("linuxfs-pwm")
                 .initial(0)
-                .shutdown(0)
+                .shutdown(10)
                 .build();
         try {
             pwm = pi4j.create(configPwm);

@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
             var outputConfig3 = DigitalOutput.newConfigBuilder(pi4j)
                     .address(DIGITAL_OUTPUT_PIN)
                     .shutdown(DigitalState.HIGH)
-                    .provider("pigpio-digital-output");
+                    .provider("linuxfs-digital-output");
             try {
                 output = pi4j.create(outputConfig3);
             } catch (Exception e) {
