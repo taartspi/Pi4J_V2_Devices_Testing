@@ -13,7 +13,7 @@ public class GettingStartedExample {
         var config = DigitalOutput.newConfigBuilder(pi4j)
                 .address(21)
                 .shutdown(DigitalState.HIGH)
-                .provider("pigpio-digital-output");
+                .provider("linuxfs-digital-output");
         try {
             output = pi4j.create(config);
         } catch (Exception e) {
