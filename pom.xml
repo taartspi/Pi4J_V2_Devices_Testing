@@ -112,11 +112,11 @@
             <artifactId>pi4j-plugin-gpiod</artifactId>
             <version>${pi4j.version}</version>
         </dependency >
-        <!--dependency>
+        <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-plugin-pigpio</artifactId>
             <version>${pi4j.version}</version>
-        </dependency-->
+        </dependency>
         <dependency>
              <groupId>org.slf4j</groupId>
              <artifactId>slf4j-api</artifactId>
