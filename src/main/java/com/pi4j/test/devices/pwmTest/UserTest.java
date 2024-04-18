@@ -73,7 +73,16 @@ public class UserTest {
        
         pwm.off();
         pwm.on(50, 10);
-        System.out.println("linuxfs pin after pin.on  freq 10  actual  frequ  " +pwm.actualFrequency());
+                System.out.println("linuxfs pin after pin.on  freq 10  actual  frequ  " +pwm.actualFrequency());
+        waitForInput(console);
+ 
+
+        System.out.println("linuxfs pin call pwm.shutdown " );
+        waitForInput(console);
+        
+        pwm.shutdown(pi4j);
+
+        System.out.println("linuxfs pi4j  call pi4j.shutdown " );
         waitForInput(console);
  
         pi4j.shutdown();
@@ -111,7 +120,7 @@ private static int waitForInput(Console console) {
                 .pwmType(PwmType.HARDWARE)
                 .provider("linuxfs-pwm")
                 .initial(0)
-                .shutdown(10)
+                .shutdown(10) 
                 .build();
         try {
             pwm = pi4j.create(configPwm);
