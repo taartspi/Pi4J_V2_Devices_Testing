@@ -20,6 +20,7 @@ import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInputProvider;
 
         public DHT22()
         {
+            init();
         }
 
         public void update()
@@ -37,8 +38,7 @@ import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInputProvider;
         }
 
         private static Context pi4j = null;
-        private void init()
-        {
+        private void init() {
             if (pi4j == null)
                 pi4j = Pi4J.newAutoContext();
             System.out.println("PI4J PROVIDERS");
@@ -47,39 +47,25 @@ import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInputProvider;
             System.out.println("----------------------------------------------------------");
 
 
-            cfgOut = DigitalOutput.newConfigBuilder(pi4j)
-                    .address(22)
-                    .initial(DigitalState.HIGH)
-                    .shutdown(DigitalState.HIGH)
-                    .provider("gpiod-digital-output")   //   pigpio   gpiod
-                    .build();
-            cfgIn = DigitalInput.newConfigBuilder(pi4j)
-                    .address(23)
-                    .pull(PullResistance.OFF)
-                    .provider("gpiod-digital-input")
-                    .build();
         }
         private DigitalInputConfig cfgIn = null;
         private DigitalOutputConfig cfgOut = null;
         private DigitalOutput out = null;
         private DigitalInput in = null;
+        private static final int PIN_22 = 22;
+
         private double [] read()
         {
-            if (cfgIn == null)
-                init();
 
-            if (out == null)
-                out = pi4j.create(cfgOut);
-            else out.initialize(pi4j);
+            out = pi4j.dout().create(PIN_22);
             out.state(DigitalState.LOW);
             long now = System.nanoTime();
             while (System.nanoTime()-now < 2000000);
             out.state(DigitalState.HIGH);
-            out.shutdown(pi4j);
+            pi4j.shutdown(out.id());
 
-            if (in == null)
-                in = pi4j.create(cfgIn);
-            else in.initialize(pi4j);
+            in = pi4j.din().create(PIN_22); //  pi4j.create(cfgIn);
+
 
             now = System.nanoTime();
             DigitalState state = in.state();
@@ -102,8 +88,7 @@ import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInputProvider;
                     state = next;
                 }
             }
-            in.shutdown(pi4j);
-
+            pi4j.shutdown(in.id());
             //should be 40 but the first few bits are often missed and often equal 0
             if (read >= 38)
             {
