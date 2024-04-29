@@ -3,112 +3,412 @@ package com.pi4j.test.devices.dht22;
 
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
-import com.pi4j.io.gpio.digital.DigitalInput;
-import com.pi4j.io.gpio.digital.DigitalInputConfig;
-import com.pi4j.io.gpio.digital.DigitalOutput;
-import com.pi4j.io.gpio.digital.DigitalOutputConfig;
-import com.pi4j.io.gpio.digital.DigitalState;
-import com.pi4j.io.gpio.digital.PullResistance;
-import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
-import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInputProvider;
+import com.pi4j.exception.LifecycleException;
+import com.pi4j.io.exception.IOException;
+import com.pi4j.io.gpio.digital.*;
+import com.pi4j.util.Console;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+
+public class DHT22 {
+
+    private final Console console;
+    private final Context pi4j;
+    private final DigitalOutput oeGpio = null;
+    private int dataPinNum = 0xff;
+    private final String traceLevel;
+    private Logger logger;
+    private DigitalOutput dataOut = null;
+    private DigitalInput dataIn = null;
+
+    private DigitalOutputConfigBuilder outputConfig1;
+    private DigitalInputConfigBuilder inputConfig1;
+
+    private DHT22.DataInGpioListener listener;
 
 
+    long timeElapsed;
+    boolean data_bits_started = false;
 
-    public class DHT22
-    {
-        public double temperature, humidity;
+    long dataBits = 0;
+    int bitCounter = 0;
+    long endInstant;
 
-        public DHT22()
-        {
-            init();
+    boolean awaitingHigh;
+
+
+    public DHT22(Context pi4j, Console console, int dataPinNum, String traceLevel) {
+        super();
+        this.console = console;
+        this.pi4j = pi4j;
+        this.dataPinNum = dataPinNum;
+        this.traceLevel = traceLevel;
+        this.awaitingHigh = true;
+        this.init();
+    }
+
+    private void init() {
+        System.setProperty("org.slf4j.simpleLogger.log." + DHT22.class.getName(), this.traceLevel);
+        this.logger = LoggerFactory.getLogger(DHT22.class);
+        this.logger.trace(">>> Enter: init");
+
+        this.logger.trace("Data Pin  " + this.dataPinNum);
+        //   this.listener = new DHT22.DataInGpioListener();
+
+        this.outputConfig1 = DigitalOutput.newConfigBuilder(pi4j)
+                .id("Data_Out")
+                .name("Data_Out")
+                .address(this.dataPinNum)
+                .shutdown(DigitalState.HIGH)
+                .initial(DigitalState.HIGH)
+                .provider("gpiod-digital-output");
+
+
+        this.inputConfig1 = DigitalInput.newConfigBuilder(pi4j)
+                .id("Data_In")
+                .name("Data_In")
+                .address(this.dataPinNum)
+                .pull(PullResistance.OFF)
+                .provider("gpiod-digital-input");
+
+
+        this.logger.trace("<<< Exit: init");
+    }
+
+
+    // Various logging routines commented out as their cose creates errors in reading the DHT22 waveform
+    private void createOutputPin() {
+        //  this.logger.trace(">>> Enter: createOutputPin");
+        this.dataOut = pi4j.create(this.outputConfig1);
+        //   this.logger.trace("<<< Exit: createOutputPin");
+    }
+
+    private void createInputPin() {
+        //   this.logger.trace(">>> Enter: createInputPin");
+        this.dataIn = pi4j.create(this.inputConfig1);
+
+       /* if(this.listener == null){
+            this.listener =  new DHT22.DataInGpioListener();
         }
+        this.dataIn.addListener(this.listener);
+        */
+        //   this.logger.trace("<<< Exit: createInputPin");
 
-        public void update()
+    }
+
+    private void idleOutputPin() {
+        //    this.logger.trace(">>> Enter: idleOutputPin");
+        this.pi4j.shutdown(this.dataOut.id());
+        //      this.logger.trace("<<< Exit: idleOutputPin");
+    }
+
+    private void idleInputPin() {
+        //  this.logger.trace(">>> Enter: idleInputPin");
+        this.pi4j.shutdown(this.dataIn.id());
+        //   this.logger.trace("<<< Exit: idleInputPin");
+    }
+
+
+    public void readAndDisplayData() {
         {
-            double [] res;
-            for (int i=0;i<40;i++)
-                if ((res = read()) != null)
-                {
+            double temperature, humidity;
+
+            double[] res;
+            for (int i = 0; i < DHT22_Declares.TOTAL_NUM_BITS; i++)
+                if ((res = read()) != null) {
                     temperature = res[0];
                     humidity = res[1];
-                    System.out.println("RH : " + humidity + "  T : " + ((temperature* 1.8) + 32));
-                    return;
-                }
-                else try {Thread.sleep(10);} catch (Exception e) {}
-        }
-
-        private static Context pi4j = null;
-        private void init() {
-            if (pi4j == null)
-                pi4j = Pi4J.newAutoContext();
-            System.out.println("PI4J PROVIDERS");
-            System.out.println("----------------------------------------------------------");
-            pi4j.providers().describe().print(System.out);
-            System.out.println("----------------------------------------------------------");
-
-
-        }
-        private DigitalInputConfig cfgIn = null;
-        private DigitalOutputConfig cfgOut = null;
-        private DigitalOutput out = null;
-        private DigitalInput in = null;
-        private static final int PIN_22 = 22;
-
-        private double [] read()
-        {
-
-            out = pi4j.dout().create(PIN_22);
-            out.state(DigitalState.LOW);
-            long now = System.nanoTime();
-            while (System.nanoTime()-now < 2000000);
-            out.state(DigitalState.HIGH);
-            pi4j.shutdown(out.id());
-
-            in = pi4j.din().create(PIN_22); //  pi4j.create(cfgIn);
-
-
-            now = System.nanoTime();
-            DigitalState state = in.state();
-            long val = 0, lastHi = now;
-            int read = 0;
-            while (System.nanoTime()-now < 10000000)
-            {
-                DigitalState next = in.state();
-                if (state != next)
-                {
-                    if (next == DigitalState.HIGH)
-                        lastHi = System.nanoTime();
-                    else
-                    {
-                        val = (val << 1);
-                        read++;
-                        if ((System.nanoTime()-lastHi)/1000 > 48)
-                            val++;
+                    String sign = "";
+                    if (((long) temperature & 0x8000) > 0) {
+                        sign = "-";
                     }
-                    state = next;
+                    System.out.println("\n    RH : " + humidity + "  T : " + sign + ((temperature * 1.8) + 32) + "\n");
+                    break;
+                } else try {
+                    Thread.sleep(300);
+                } catch (Exception e) {
                 }
-            }
-            pi4j.shutdown(in.id());
-            //should be 40 but the first few bits are often missed and often equal 0
-            if (read >= 38)
-            {
-                int hi = (int)((val & 0xff00000000L) >> 32), hd = (int)((val & 0xff000000L) >> 24),
-                        ti = (int)((val & 0xff0000) >> 16), td = (int)((val & 0xff00) >> 8),
-                        cs = (int)(val & 0xff);
-                //checksum
-                if (cs == ((hi+hd+ti+td) & 0xff))
-                {
-                    double temperature = ((((ti & 0x7f) << 8)+td)/10.)*((ti & 0x80) != 0 ? -1 : 1);
-                    double humidity = ((hi << 8)+hd)/10.;
-                    return new double [] {temperature, humidity};
-                }
-            }
-            return null;
         }
 
-        public static void main(String[] args) {
-            DHT22 dht = new DHT22();
-            dht.update();
+        // this.readAndDisplayDataLL();
+
+    }
+
+    private double[] read() {
+        this.logger.trace(">>> Enter: read");
+        this.createOutputPin();
+        this.dataOut.state(DigitalState.LOW);
+        long now = System.nanoTime();
+        while (System.nanoTime() - now < 2000000) ;
+        this.dataOut.state(DigitalState.HIGH);
+        this.idleOutputPin();
+
+        this.createInputPin();
+        now = System.nanoTime();
+        DigitalState state = this.dataIn.state();
+        long val = 0, lastHi = now;
+        int read = 0;
+        while (System.nanoTime() - now < 10000000) {
+            DigitalState next = this.dataIn.state();
+            // this.logger.trace("Pin's state was :" + next);
+            if (state != next) {
+                if (next == DigitalState.HIGH)
+                    lastHi = System.nanoTime();
+                else {
+                    val = (val << 1);
+                    read++;
+                    if ((System.nanoTime() - lastHi) / 1000 > 48)
+                        val++;//  long duration high, signifies a 1
+                }
+                state = next;
+            }
+        }
+        this.idleInputPin();
+        double[] rval = null;
+        double temperature = 0.0;
+        double humidity = 0.0;
+        //should be 40 but the first few bits are often missed and often equal 0
+        //But enough read to see if the checksum validate we read all pertinent bit;
+        if (read >= 38) {
+            int hi = (int) ((val & 0xff00000000L) >> 32), hd = (int) ((val & 0xff000000L) >> 24),
+                    ti = (int) ((val & 0xff0000) >> 16), td = (int) ((val & 0xff00) >> 8),
+                    cs = (int) (val & 0xff);
+            //checksum validation
+            if (cs == ((hi + hd + ti + td) & 0xff)) {
+                temperature = ((((ti & 0x7f) << 8) + td) / 10.) * ((ti & 0x80) != 0 ? -1 : 1); // check if sign bit set (neg) multi by -1
+                humidity = ((hi << 8) + hd) / 10;
+                rval = new double[]{temperature, humidity};
+
+                this.logger.trace("Decoded values   T: " + temperature + "/" + ((temperature * 1.8) + 32) + "   RH : " + humidity);
+            } else {
+                this.logger.trace("Checksum failed val  : " + val); //will return null and read() will be called again
+            }
+        }
+        this.logger.trace("<<< Exit");
+        return rval;
+    }
+
+    /**
+     * If the commented use of the listener DataInGpioListener, this would
+     * be a more normal implementation. However, the time to idle the gpio from output operation and
+     * re-init the gpio as an input with a listener takes too long to complete
+     * and DHT22  signals are lost and the device attempt to send data fails.
+     * <p>
+     * So, for the time being  a simple polling implementation is used.
+     */
+    private void readAndDisplayDataLL() {
+        this.logger.trace(">>> Enter: readAndDisplayDataLL");
+        long now = System.nanoTime();
+        this.idleInputPin();  // possibly exists from previous OP
+        this.createOutputPin();
+        this.dataOut.low();
+        while (System.nanoTime() - now < 2000000) {
+        }
+        this.dataOut.high();
+        this.idleOutputPin();
+        this.createInputPin();
+
+        this.logger.trace("<<< Exit: readAndDisplayDataLL");
+
+    }
+
+    private void process_timeCalc() {
+        long durationMics = this.timeElapsed / 1000;
+        // this.logger.trace(" >>> Enter: process_timeCalc  duration MICs " + durationMics  + " bit counter : " +  this.bitCounter);
+        if ((durationMics > DHT22_Declares.ZERO_PULSE_MICS - 5) && (durationMics < DHT22_Declares.ZERO_PULSE_MICS + 5)) {
+            // zero bit
+            //  this.logger.trace("zero bit ");
+            this.dataBits = (this.dataBits << 1) | 0;
+            this.bitCounter++;
+        } else if ((durationMics > DHT22_Declares.ONE_PULSE_MICS - 5) && (durationMics < DHT22_Declares.ONE_PULSE_MICS + 5)) {
+            // one bit
+            //  this.logger.trace("one bit ");
+            this.dataBits = (this.dataBits << 1) | 1;
+            this.bitCounter++;
+        }
+        //  this.logger.trace("this.bitCounter " + this.bitCounter);
+
+        if (this.bitCounter >= DHT22_Declares.TOTAL_NUM_BITS) {
+            this.data_bits_started = false;
+            // display the data
+            //TODO validate cksum
+            long rh = (this.dataBits >> (DHT22_Declares.T_NUM_BITS + DHT22_Declares.CKSUM_NUM_BITS)) / 10;
+            long t = ((this.dataBits >> DHT22_Declares.CKSUM_NUM_BITS) & 0xffff) / 10;
+            // ready for next calculation
+            this.data_bits_started = true;
+            this.bitCounter = 0;
+            this.dataBits = 0;
+            String sign = "";
+            if ((t & 0x80) > 0) {
+                sign = "-";
+            }
+            this.logger.trace("RH = " + rh + "   t = : " + sign + ((t * 1.8) + 32));
+        }
+
+        // this.logger.trace(" <<< Exit: process_timeCalc ");
+    }
+
+    protected void sleepTimeMilliS(int milliSec) {
+        TimeUnit tu = TimeUnit.MILLISECONDS;
+        try {
+            tu.sleep(milliSec);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
+
+    public static void main(String[] args) throws InterruptedException, IOException {
+        var console = new Console();
+        Context pi4j = Pi4J.newAutoContext();
+        int dataPinNum = 0xff;
+        String traceLevel = "info";
+        console.title("<-- The Pi4J V2 Project Extension  -->", "DHT22_App");
+        String helpString = " parms:  -d  data GPIO number  -t trace " +
+                " \n -t  trace values : \"trace\", \"debug\", \"info\", \"warn\", \"error\" \n " +
+                " or \"off\"  Default \"info\"";
+
+        Signal.handle(new Signal("INT"), new SignalHandler() {
+            public void handle(Signal sig) {
+                System.out.println("Performing ctl-C shutdown");
+                try {
+                    pi4j.shutdown();
+                } catch (LifecycleException e) {
+                    e.printStackTrace();
+                }
+                // Thread.dumpStack();
+                System.exit(2);
+            }
+        });
+
+        for (int i = 0; i < args.length; i++) {
+            String o = args[i];
+            if (o.contentEquals("-d")) {
+                String a = args[i + 1];
+                dataPinNum = Integer.parseInt(a);
+                i++;
+            } else if (o.contentEquals("-t")) {
+                String a = args[i + 1];
+                i++;
+                traceLevel = a;
+                if (a.contentEquals("trace") | a.contentEquals("debug") | a.contentEquals("info") | a.contentEquals("warn") | a.contentEquals("error") | a.contentEquals("off")) {
+                    console.println("Changing trace level to : " + traceLevel);
+                } else {
+                    console.println("Changing trace level invalid  : " + traceLevel);
+                    System.exit(41);
+                }
+            } else if (o.contentEquals("-h")) {
+                console.println(helpString);
+                System.exit(41);
+            } else {
+                console.println("  !!! Invalid Parm " + o);
+                console.println(helpString);
+                System.exit(43);
+            }
+        }
+        DHT22 sensor = new DHT22(pi4j, console, dataPinNum, traceLevel);
+        sensor.readAndDisplayData();
+
+        // console.waitForExit();
+
+        pi4j.shutdown();
+    }
+
+    /* Listener class        */
+
+    private static class DataInGpioListener implements DigitalStateChangeListener {
+
+        Instant startInstant;
+        Duration timeElapsed;
+        boolean data_bits_started = false;
+
+        long dataBits = 0;
+        int bitCounter = 0;
+
+        public DataInGpioListener() {
+            System.out.println("DataInGpioListener ctor");
+        }
+
+        @Override
+        public void onDigitalStateChange(DigitalStateChangeEvent event) {
+            System.out.println(">>> Enter: onDigitalStateChange");
+            this.startInstant = Instant.now(); //  init Duration because first event is Low,
+            // this is in prep to begin sending high----low transition to signify 0 or 1
+            if (event.state() == DigitalState.HIGH) {
+                this.startInstant = Instant.now();
+                System.out.println("onDigitalStateChange Pin went High");
+            } else if (event.state() == DigitalState.LOW) {
+                Instant endInstant = Instant.now();
+                System.out.println("onDigitalStateChange Pin went Low");
+                this.timeElapsed = Duration.between(startInstant, endInstant);
+                System.out.println("timeElapsed time MicS " + timeElapsed.getNano() / 1000);
+                this.process_timeCalc();
+            } else {
+                System.out.println("Strange event state  " + event.state());
+            }
+            System.out.println("<<< Exit: onDigitalStateChange");
+        }
+
+        private void process_timeCalc() {
+            long durationMics = this.timeElapsed.getNano() / 1000;
+            System.out.println(" >>> Enter: process_timeCalc  duration MICs " + durationMics + " bit counter : " + this.bitCounter);
+            if ((durationMics > DHT22_Declares.ZERO_PULSE_MICS - 5) && (durationMics < DHT22_Declares.ZERO_PULSE_MICS + 5)) {
+                // zero bit
+                System.out.println("zero bit ");
+                this.dataBits = (this.dataBits << 1) | 0;
+            } else if ((durationMics > DHT22_Declares.ONE_PULSE_MICS - 5) && (durationMics < DHT22_Declares.ONE_PULSE_MICS + 5)) {
+                // one bit
+                System.out.println("one bit ");
+                this.dataBits = (this.dataBits << 1) | 1;
+            }
+            this.bitCounter++;
+            System.out.println("this.bitCounter " + this.bitCounter);
+
+            if (this.bitCounter >= DHT22_Declares.TOTAL_NUM_BITS) {
+                this.data_bits_started = false;
+                // display the data
+                //TODO validate cksum
+                long rh = (this.dataBits >> (DHT22_Declares.T_NUM_BITS + DHT22_Declares.CKSUM_NUM_BITS)) / 10;
+                long t = ((this.dataBits >> DHT22_Declares.CKSUM_NUM_BITS) & 0xffff) / 10;
+                // ready for next calculation
+                this.data_bits_started = true;
+                this.bitCounter = 0;
+                this.dataBits = 0;
+                System.out.println("RH = " + rh + "   t = : " + ((t * 1.8) + 32));
+            }
+
+            System.out.println(" <<< Exit: process_timeCalc ");
+        }
+
+
+    }
+
+    public class DHT22_Declares {
+
+
+        // MCU/Pi, initiate sensor OP
+        protected final static int BEGIN_READINGS_MILLS = 20;
+        // these two signal the sensor is prepared to send data
+        protected final static int PREPARE_DATA_LOW_PULSE_MICS = 80;
+        protected final static int PREPARE_DATA_HIGH_PULSE_MICS = 80;
+
+        // data signals '0 or '1' by pulse length
+        protected final static int ZERO_PULSE_MICS = 27;  // zero bit
+        protected final static int ONE_PULSE_MICS = 70;   //  one bit
+
+
+        protected final static int TOTAL_NUM_BITS = 40;
+        protected final static int RH_NUM_BITS = 16;
+        protected final static int T_NUM_BITS = 16;
+        protected final static int CKSUM_NUM_BITS = 8;
+
+
+    }
+}
+
 
