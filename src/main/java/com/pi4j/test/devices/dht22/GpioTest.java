@@ -7,6 +7,7 @@ import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.Digital;
 import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalOutput;
+import com.pi4j.io.gpio.digital.DigitalState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,18 @@ public class GpioTest {
 //		Future<?> pulseYellow = ledYellow.pulseAsync(1, TimeUnit.SECONDS);
 //		blinkRed.get();
 //		pulseYellow.get();
+
+
+        var ledConfig = DigitalOutput.newConfigBuilder(pi4j)
+                .id("my-dout")
+                .name("My LED")
+                .address(18)
+                .shutdown(DigitalState.LOW)
+                .initial(DigitalState.HIGH);
+
+        var led = pi4j.create(ledConfig);
+
+        logger.info("pin detail " + led);
 
         AtomicReference<Digital> greenBtnRef = new AtomicReference<>();
 

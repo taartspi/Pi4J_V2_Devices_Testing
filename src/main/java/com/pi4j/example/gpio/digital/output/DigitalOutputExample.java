@@ -86,7 +86,7 @@ public class DigitalOutputExample {
                 .build();
 
         // get a Digital Input I/O provider from the Pi4J context
-        DigitalOutputProvider digitalInputProvider = pi4j.provider("linuxfs-digital-output");
+        DigitalOutputProvider digitalInputProvider = pi4j.provider("gpiod-digital-output");
 
         var output = digitalInputProvider.create(config);
 
