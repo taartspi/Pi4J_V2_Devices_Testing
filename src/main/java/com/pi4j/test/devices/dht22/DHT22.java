@@ -75,6 +75,7 @@ public class DHT22 {
                 .name("Data_In")
                 .address(this.dataPinNum)
                 .pull(PullResistance.OFF)
+                .debounce(50L)
                 .provider("gpiod-digital-input");
 
 
@@ -265,6 +266,8 @@ public class DHT22 {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         var console = new Console();
+      //  System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "TRACE");
+
         Context pi4j = Pi4J.newAutoContext();
         int dataPinNum = 0xff;
         String traceLevel = "info";

@@ -28,6 +28,8 @@ public class GpioTest {
     private static final int PIN_22 = 5;
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
+
+      //  System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "OFF");   no worky
         Context pi4j = Pi4J.newAutoContext();
         DigitalOutput ledRed = pi4j.dout().create(PIN_LED_RED);
         DigitalOutput ledYellow = pi4j.dout().create(PIN_LED_YELLOW);

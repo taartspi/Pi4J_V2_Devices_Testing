@@ -23,6 +23,12 @@ public class BMP280 {
         // method will automatically load all available Pi4J
         // extensions found in the application's classpath which
         // may include 'Platforms' and 'I/O Providers'
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+        //"org.slf4j.simpleLogger.log."
+
+        System.setProperty("org.slf4j.simpleLogger.log.com.pi4j.Pi4J", "trace");
 
         var pi4j = Pi4J.newContextBuilder().add(
                 LinuxFsI2CProvider.newInstance()).build();
