@@ -2,15 +2,16 @@ package com.pi4j.test.devices.dht22;
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.io.spi.Spi;
-import com.pi4j.io.spi.SpiProvider;
-//import com.pi4j.plugin.pigpio.*;
-//import com.pi4j.plugin.pigpio.provider.spi.PiGpioSpiProvider;
+
+import com.pi4j.io.spi.SpiChipSelect;
+import com.pi4j.io.spi.SpiMode;
+
 import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.pi4j.plugin.pigpio.provider.spi.PiGpioSpiProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,13 +21,20 @@ public class Pi4jTest {
 
     public static void main(String[] args) throws InterruptedException {
         Context pi4JContext = Pi4J.newAutoContext();
-        SpiProvider spiProvider = pi4JContext.provider(PiGpioSpiProvider.class);
-        Spi spi = spiProvider.create(Spi.newConfigBuilder(pi4JContext)
-                .id("my-spi-device")
-                .name("My SPI Device")
-                .address(0)
-                .baud(2 * Spi.DEFAULT_BAUD)
-                .build());
+
+
+
+        var spiConfig = Spi.newConfigBuilder(pi4JContext)
+                .id("SPI" + 0 + "CE  " +0)
+                .name("A/D converter")
+                .bus(0)
+                .chipSelect(SpiChipSelect.CS_0)
+                .flags(0b0000000000000000000000L)
+                .baud(Spi.DEFAULT_BAUD)
+                .mode(SpiMode.MODE_0)
+                .provider("pigpio-spi")
+                .build();
+        var spi = pi4JContext.create(spiConfig);
 
         final SpiReader spiReader = new SpiReader(spi);
 
