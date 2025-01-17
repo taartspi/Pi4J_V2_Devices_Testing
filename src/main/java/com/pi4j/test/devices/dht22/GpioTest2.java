@@ -15,22 +15,23 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GpioTest {
+public class GpioTest2 {
 
     private static final Logger logger = LoggerFactory.getLogger(GpioTest.class);
 
     // Connect a LED to PIN 15 = BCM 22
-    private static final int PIN_LED_YELLOW = 17;
-    private static final int PIN_LED_RED = 27;
-    private static final int PIN_LED_GREEN = 22;
-    private static final int PIN_BTN_RED = 5;
-    private static final int MYDOUT = 18;
-    private static final int PIN_SWAP = 13;
+    private static final int PIN_LED_YELLOW = 23;//17;
+    private static final int PIN_LED_RED = 24; //27;
+    private static final int PIN_LED_GREEN = 25;//22;
+    private static final int PIN_BTN_RED = 12;//5;
+    private static final int MYDOUT = 6;// 18;
+    private static final int PIN_SWAP = 16; //13;
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
       //  System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "OFF");   no worky
         Context pi4j = Pi4J.newAutoContext();
+
         var console = new Console();
         System.out.println("----------------------------------------------------------");
         System.out.println("PI4J PROVIDERS");
@@ -98,7 +99,7 @@ public class GpioTest {
                 });
                 logger.info("Toggle  : " + PIN_LED_RED );
                 ledRed.toggle();
-               logger.info("Pin " + PIN_SWAP + " is now input " + digital.id());
+                logger.info("Pin " + PIN_SWAP + " is now input " + digital.id());
             }
 
             greenBtnRef.set(digital);
