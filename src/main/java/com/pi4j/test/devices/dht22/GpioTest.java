@@ -7,6 +7,7 @@ import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.Digital;
 import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalOutput;
+
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.util.Console;
 import org.slf4j.Logger;
@@ -29,7 +30,6 @@ public class GpioTest {
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
-      //  System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "OFF");   no worky
         Context pi4j = Pi4J.newAutoContext();
         var console = new Console();
         System.out.println("----------------------------------------------------------");
@@ -42,6 +42,7 @@ public class GpioTest {
         DigitalOutput ledYellow = pi4j.dout().create(PIN_LED_YELLOW);
         DigitalOutput ledGreen = pi4j.dout().create(PIN_LED_GREEN);
         DigitalInput redBtn = pi4j.din().create(PIN_BTN_RED);
+
 
 //		ledRed.blink(1, 5, TimeUnit.SECONDS);
 //		ledYellow.pulse(1, TimeUnit.SECONDS);
@@ -61,6 +62,14 @@ public class GpioTest {
         var led = pi4j.create(ledConfig);
 
         logger.info("pin detail " + led);
+
+//     ledRed.blink(1, 5, TimeUnit.SECONDS);
+//     ledYellow.pulse(1, TimeUnit.SECONDS);
+//     Future<?> blinkRed = ledRed.blinkAsync(1, 5, TimeUnit.SECONDS);
+//     Future<?> pulseYellow = ledYellow.pulseAsync(1, TimeUnit.SECONDS);
+//     blinkRed.get();
+//     pulseYellow.get();
+
 
         AtomicReference<Digital> greenBtnRef = new AtomicReference<>();
 
@@ -129,4 +138,6 @@ public class GpioTest {
             Thread.currentThread().wait();
         }
     }
+
 }
+

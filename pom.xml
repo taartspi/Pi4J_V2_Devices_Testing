@@ -70,7 +70,13 @@
     <properties>
 
         <!-- DEPENDENCY VERSIONS -->
+<<<<<<< HEAD
         <pi4j.version>3.0.0-SNAPSHOT</pi4j.version>
+=======
+
+        <pi4j.version>2.7.0</pi4j.version>
+
+>>>>>>> main
         <slf4j.version>2.0.3</slf4j.version>
 
         <!-- PROJECT ENCODING PROPERTIES -->
