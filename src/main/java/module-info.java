@@ -1,6 +1,6 @@
 module com.pi4j.test.devices {
     requires com.pi4j;
-    //requires com.pi4j.devices;
+  //  requires com.pi4j.devices;
 
     requires com.pi4j.plugin.pigpio;
 
@@ -15,8 +15,13 @@ module com.pi4j.test.devices {
     requires com.pi4j.devices;
     requires jdk.unsupported;
     requires com.pi4j.plugin.linuxfs;
+<<<<<<< HEAD
+  //  requires com.pi4j.library.pigpio;
+   // requires com.pi4j.library.gpiod;
+=======
     requires com.pi4j.library.pigpio;
     requires com.pi4j.library.gpiod;
+>>>>>>> main
     requires com.pi4j.plugin.gpiod;
 
 

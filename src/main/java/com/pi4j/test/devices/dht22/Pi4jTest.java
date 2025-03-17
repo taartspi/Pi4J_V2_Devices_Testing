@@ -10,6 +10,9 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+
+import com.pi4j.util.Console;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,17 +23,28 @@ public class Pi4jTest {
     public static void main(String[] args) throws InterruptedException {
         Context pi4JContext = Pi4J.newAutoContext();
 
+       var console = new Console();
+        System.out.println("----------------------------------------------------------");
+        System.out.println("PI4J PROVIDERS");
+        System.out.println("----------------------------------------------------------");
+        pi4JContext.providers().describe().print(System.out);
+        System.out.println("----------------------------------------------------------");
 
 
+
+
+//  .flags(0b0000000000000000000000L)  not supported on Pi5
+               
         var spiConfig = Spi.newConfigBuilder(pi4JContext)
                 .id("SPI" + 0 + "CE  " +0)
                 .name("A/D converter")
                 .bus(0)
                 .chipSelect(SpiChipSelect.CS_0)
-                .flags(0b0000000000000000000000L)
                 .baud(Spi.DEFAULT_BAUD)
                 .mode(SpiMode.MODE_0)
-                .provider("pigpio-spi")
+                .readLsbFirst(0)
+                .writeLsbFirst(0)
+                .provider("linuxfs-spi")
                 .build();
         var spi = pi4JContext.create(spiConfig);
 
@@ -63,6 +77,7 @@ public class Pi4jTest {
         public synchronized Object read(int channel) {
             byte[] rxBuffer = new byte[]{-1, -1, -1};
             ByteBuffer readBuffer = ByteBuffer.allocate(3);
+
             spi.transfer(createWriteBuffer(channel), readBuffer, 3);
             logData(readBuffer.array());
             return readBuffer;
