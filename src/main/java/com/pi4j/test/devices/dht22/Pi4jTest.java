@@ -11,6 +11,8 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.pi4j.util.Console;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,14 @@ public class Pi4jTest {
 
     public static void main(String[] args) throws InterruptedException {
         Context pi4JContext = Pi4J.newAutoContext();
+
+        var console = new Console();
+        System.out.println("----------------------------------------------------------");
+        System.out.println("PI4J PROVIDERS");
+        System.out.println("----------------------------------------------------------");
+        pi4JContext.providers().describe().print(System.out);
+        System.out.println("----------------------------------------------------------");
+
 
 
 
