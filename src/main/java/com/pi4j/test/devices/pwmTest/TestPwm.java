@@ -22,6 +22,8 @@ public class TestPwm {
     }
 
     public static void main(String[] args) throws Exception {
+           System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "TRACE");
+   //       System.setProperty("org.slf4j.simpleLogger.log.com.ibm/Pi4J", "TRACE");
         pi4j = Pi4J.newAutoContext();
         initGPIOCM4();
         System.out.println("linuxfs before pin.on  actual  frequ  " +pwm.actualFrequency());
@@ -97,9 +99,10 @@ public class TestPwm {
 
     private static void initGPIOCM4() {
         var configPwm = Pwm.newConfigBuilder(pi4j)
-                .address(2)
+                .address(0)
                 .pwmType(PwmType.HARDWARE)
-                .provider("linuxfs-pwm")
+                .busNumber(0)
+                .provider("PwmFFMProviderImpl")  // linuxfs-pwm
                 .initial(0)
               //  .shutdown(0)
                 .build();

@@ -72,7 +72,7 @@ public class MCP3008Test {
         short pinNumber = 0;
         double vref = 0;
 
-        SpiChipSelect chipSelect = SpiChipSelect.CS_0;
+        short chipSelect = 0;
         SpiBus spiBus = SpiBus.BUS_0;
 
         console.title("<-- The Pi4J V2 Project Extension  -->", "MCP3008App");
@@ -108,7 +108,7 @@ public class MCP3008Test {
                 }
             } else if (o.contentEquals("-c")) { // pin
                 String a = args[i + 1];
-                chipSelect = SpiChipSelect.getByNumber(Short.parseShort(a.substring(2), 16));
+                chipSelect = Short.parseShort(a.substring(2), 16);
                 i++;
             } else if (o.contentEquals("-s")) { // pin
                 String a = args[i + 1];

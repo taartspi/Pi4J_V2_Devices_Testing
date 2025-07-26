@@ -21,6 +21,7 @@ public class Pi4jTest {
     private static final Logger logger = LoggerFactory.getLogger(Pi4jTest.class);
 
     public static void main(String[] args) throws InterruptedException {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
         Context pi4JContext = Pi4J.newAutoContext();
 
        var console = new Console();
@@ -39,7 +40,9 @@ public class Pi4jTest {
                 .id("SPI" + 0 + "CE  " +0)
                 .name("A/D converter")
                 .bus(0)
-                .chipSelect(SpiChipSelect.CS_0)
+                 .address(0)
+                //.channel(5)
+               // .chipSelect(SpiChipSelect.CS_10)
                 .baud(Spi.DEFAULT_BAUD)
                 .mode(SpiMode.MODE_0)
                 .readLsbFirst(0)

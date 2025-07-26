@@ -60,7 +60,7 @@ public class SimpleGpio {
                 var outputConfig3 = DigitalOutput.newConfigBuilder(pi4j)
                         .address(DIGITAL_OUTPUT_PIN)
                         .shutdown(DigitalState.LOW)
-                        .provider("gpiod-digital-output");
+                        .provider("DigitalInputFFMProviderImpl");  //  DigitalInputFFMProviderImpl gpiod-digital-output
                 output = pi4j.create(outputConfig3);
                 output.high();
                 output.shutdown(pi4j);
@@ -75,7 +75,7 @@ public class SimpleGpio {
                 DigitalInput input = null;
                 var inputConfig3 = DigitalInput.newConfigBuilder(pi4j)
                         .address(DIGITAL_OUTPUT_PIN)
-                        .provider("gpiod-digital-input");
+                        .provider("DigitalInputFFMProviderImpl");   //  gpiod-digital-input DigitalInputFFMProviderImpl
                 input = pi4j.create(inputConfig3);
                 String result = input.state().toString();
                 console.println(" Read state : " + result);
@@ -95,7 +95,7 @@ public class SimpleGpio {
                     .build();
 
             // get a Digital output I/O provider from the Pi4J context
-            DigitalOutputProvider digitalOutputProvider = pi4j.provider("gpiod-digital-output");
+            DigitalOutputProvider digitalOutputProvider = pi4j.provider("DigitalOutputFFMProviderImpl"); // gpiod-digital-output DigitalOutputFFMProviderImpl
 
             var output42 = digitalOutputProvider.create(config);
 
@@ -147,7 +147,7 @@ public class SimpleGpio {
             var inputConfig5 = DigitalInput.newConfigBuilder(pi4j)
                     .address(DIGITAL_INPUT_PIN)
                     .pull(PullResistance.PULL_DOWN)
-                    .provider("gpiod-digital-input");
+                    .provider("DigitalInputFFMProviderImpl");   // gpiod-digital-input  DigitalInputFFMProviderImpl
             input5 = pi4j.create(inputConfig5);
             // setup a digital output listener to listen for any state changes on the digital output
             input5.addListener(new SimpleGpio.DataInGpioListener());
