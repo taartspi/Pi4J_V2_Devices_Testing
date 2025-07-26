@@ -14,6 +14,8 @@ public class UserTest {
     private static Context pi4j;
 
     public static void main(String[] args) throws Exception {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
+
         pi4j = Pi4J.newAutoContext();     //  remove var
 
 

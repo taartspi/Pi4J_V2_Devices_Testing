@@ -6,6 +6,8 @@ import com.pi4j.devices.bmp280.BMP280DeviceI2C;
 import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
 import com.pi4j.util.Console;
 
+
+
 public class BMP280 {
 
     public static void main(String[] args) throws Exception {
@@ -32,7 +34,6 @@ public class BMP280 {
 
         var pi4j = Pi4J.newContextBuilder().add(
                 LinuxFsI2CProvider.newInstance()).build();
-
 
         // print installed providers
         System.out.println("----------------------------------------------------------");
