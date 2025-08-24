@@ -9,9 +9,14 @@ import com.pi4j.io.pwm.PwmConfigBuilder;
 import com.pi4j.io.pwm.PwmType;
 import com.pi4j.io.spi.SpiBus;
 import com.pi4j.io.spi.SpiChipSelect;
+// TAimport com.pi4j.plugin.ffm.providers.gpio.DigitalInputFFMProviderImpl;
 import com.pi4j.util.Console;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
+
+import com.pi4j.plugin.linuxfs.provider.pwm.LinuxFsPwmProvider;
+import com.pi4j.plugin.linuxfs.provider.pwm.LinuxFsPwmProviderImpl;
+
 
 public class PwmTest {
     private final Context pi4j;
@@ -48,11 +53,12 @@ public class PwmTest {
         final PwmConfig config = PwmConfigBuilder.newInstance (pi4j)
                 .id ("BCM18")
                 .name ("PWM")
-                .address (0)// this.address)  //or 1 LED on gpio13  the second channel
+                .address (3) // this.address)  //or 1 LED on gpio13  the second channel
                 .pwmType(pinType)
                 .initial(this.duty)
                 .frequency(this.freq)
-                .provider ("linuxfs-pwm") // pigpio   linuxfs
+                //.busNumber(0)
+                .provider ("linuxfs-pwm") // pigpio   linuxfs-pwm   PwmFFMProviderImpl
                 .shutdown (0)
                 .frequency(this.freq)
                  .build ();
@@ -74,9 +80,27 @@ public class PwmTest {
      * @throws java.lang.Exception if any.
      */
     public static void main(String[] args) throws Exception {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
 
         var console = new Console();
-        Context pi4j = Pi4J.newAutoContext();
+       Context pi4j = Pi4J.newAutoContext();
+
+       /*Context pi4j = Pi4J.newContextBuilder()
+                .add(new LinuxFsPwmProviderImpl("/sys/class/pwm/",0) )
+                .build();
+*/
+     /*   Context pi4j = Pi4J.newContextBuilder()
+                .add(new LinuxFsPwmProviderImpl())
+                .setGpioChipName("gpiochip0")
+                .build();
+*/
+        console.println("----------------------------------------------------------");
+        console.println("PI4J PROVIDERS");
+        console.println("----------------------------------------------------------");
+        pi4j.providers().describe().print(System.out);
+        System.out.println("----------------------------------------------------------");
+
+
         int gpioNumber = 0;
         int duty = 0;
         int freq = 1;

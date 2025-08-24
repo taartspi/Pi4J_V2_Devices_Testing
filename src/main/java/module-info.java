@@ -15,8 +15,8 @@ module com.pi4j.test.devices {
     requires com.pi4j.devices;
     requires jdk.unsupported;
     requires com.pi4j.plugin.linuxfs;
-
-    requires com.pi4j.plugin.ffm;
+//ta
+   // requires com.pi4j.plugin.ffm;
 
 
   //  requires com.pi4j.library.pigpio;
