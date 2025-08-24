@@ -4,6 +4,7 @@ import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmType;
+import com.pi4j.util.Console;
 //import com.pi4j.library.pigpio.PiGpio;
 
 public class TestPwm {
@@ -25,6 +26,15 @@ public class TestPwm {
            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "TRACE");
    //       System.setProperty("org.slf4j.simpleLogger.log.com.ibm/Pi4J", "TRACE");
         pi4j = Pi4J.newAutoContext();
+        var console = new Console();
+
+        console.println("----------------------------------------------------------");
+        console.println("PI4J PROVIDERS");
+        console.println("----------------------------------------------------------");
+        pi4j.providers().describe().print(System.out);
+        System.out.println("----------------------------------------------------------");
+
+
         initGPIOCM4();
         System.out.println("linuxfs before pin.on  actual  frequ  " +pwm.actualFrequency());
         pwm.off();
@@ -101,8 +111,8 @@ public class TestPwm {
         var configPwm = Pwm.newConfigBuilder(pi4j)
                 .address(0)
                 .pwmType(PwmType.HARDWARE)
-                .busNumber(0)
-                .provider("PwmFFMProviderImpl")  // linuxfs-pwm
+                //.busNumber(0)
+                .provider("linuxfs-pwm")  // linuxfs-pwm  PwmFFMProviderImpl
                 .initial(0)
               //  .shutdown(0)
                 .build();
