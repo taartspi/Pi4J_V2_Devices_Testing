@@ -86,9 +86,9 @@ public class DigitalOutputExample {
                 .build();
 
         // get a Digital Input I/O provider from the Pi4J context
-        DigitalOutputProvider digitalInputProvider = pi4j.provider("gpiod-digital-output");
+        DigitalOutputProvider digitalOutputProvider = pi4j.provider("gpiod-digital-output");
 
-        var output = digitalInputProvider.create(config);
+        var output = digitalOutputProvider.create(config);
 
 
         // setup a digital output listener to listen for any state changes on the digital output

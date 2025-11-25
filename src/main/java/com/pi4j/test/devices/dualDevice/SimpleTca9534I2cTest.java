@@ -15,7 +15,8 @@ public class SimpleTca9534I2cTest {
     public static void main(String[] args) throws Exception {
 
         Context pi4j = Pi4J.newAutoContext();
-        I2CProvider i2CProvider = pi4j.provider("linuxfs-i2c");
+        // FFMI2CProviderImpl linuxfs-i2c
+        I2CProvider i2CProvider = pi4j.provider("FFMI2CProviderImpl");
         I2CConfig i2cConfig = I2C.newConfigBuilder(pi4j).id("TCA9534").bus(1).device(0x3f).build();
         try (I2C tca9534Dev = i2CProvider.create(i2cConfig)) {
 
