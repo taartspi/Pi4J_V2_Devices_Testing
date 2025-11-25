@@ -25,17 +25,17 @@ public class DualDevice {
 
     public int doit(){
         int rval = 0;
-        I2CProvider i2CProvider = pi4j.provider("linuxfs-i2c");
+        // FFMI2CProviderImpl   linuxfs-i2c
+        I2CProvider i2CProvider = pi4j.provider("linuxfs-i2c"); //FFMI2CProviderImpl
 
-        I2CConfig i2cConfig20 = I2C.newConfigBuilder(pi4j).id("MCP23017_TWENTY").bus(1).device(0x20).build();
-        I2C dev20 = i2CProvider.create(i2cConfig20);
+        I2CConfig i2cConfig20 = I2C.newConfigBuilder(pi4j).id("MPL3115_SEVENTY").bus(1).device(0x70).build();
+        I2C dev20 = i2CProvider.create(i2cConfig20);   //MPL3115_SIXTY
 
-        
-        I2CConfig i2cConfig60 = I2C.newConfigBuilder(pi4j).id("MPL3115_SIXTY").bus(1).device(0x60).build();
+
+        I2CConfig i2cConfig60 = I2C.newConfigBuilder(pi4j).id("MPL3115_SIXTY2").bus(1).device(0x72).build();
         I2C dev60 = i2CProvider.create(i2cConfig60);
 
-
-        I2CConfig i2cConfig70 = I2C.newConfigBuilder(pi4j).id("TCA9548_SEVENTY").bus(1).device(0x70).build();
+        I2CConfig i2cConfig70 = I2C.newConfigBuilder(pi4j).id("TCA9548_SEVENTY4").bus(1).device(0x74).build();
         I2C dev70 = i2CProvider.create(i2cConfig70);
         
         int ret60;

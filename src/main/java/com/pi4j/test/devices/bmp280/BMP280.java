@@ -1,8 +1,8 @@
 package com.pi4j.test.devices.bmp280;
 
 import com.pi4j.Pi4J;
-import com.pi4j.devices.bmp280.BMP280Device;
-import com.pi4j.devices.bmp280.BMP280DeviceI2C;
+//import com.pi4j.devices.bmp280.BMP280Device;
+//import com.pi4j.devices.bmp280.BMP280DeviceI2C;
 import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
 import com.pi4j.util.Console;
 
@@ -31,7 +31,8 @@ public class BMP280 {
         //"org.slf4j.simpleLogger.log."
 
         System.setProperty("org.slf4j.simpleLogger.log.com.pi4j.Pi4J", "trace");
-
+       // pi4j = Pi4J.newAutoContext();
+        // FFMI2CProviderImpl   LinuxFsI2CProvider
         var pi4j = Pi4J.newContextBuilder().add(
                 LinuxFsI2CProvider.newInstance()).build();
 
@@ -47,7 +48,7 @@ public class BMP280 {
         console.print("startup  BMP280   ");
         console.print("==============================================================");
 
-
+/*
 
         var bmpDev = new BMP280DeviceI2C(pi4j, console, 1, 0x77, "info");
         bmpDev.initSensor();
@@ -72,7 +73,7 @@ public class BMP280 {
         double press3 = bmpDev.pressureMb();
         console.println(" Pressure mb = " + press3);
 
-
+*/
         // Shutdown Pi4J
         pi4j.shutdown();
     }

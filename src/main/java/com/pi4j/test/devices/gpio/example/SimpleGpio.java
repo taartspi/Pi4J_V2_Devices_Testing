@@ -63,7 +63,7 @@ public class SimpleGpio {
                         .provider("DigitalInputFFMProviderImpl");  //  DigitalInputFFMProviderImpl gpiod-digital-output
                 output = pi4j.create(outputConfig3);
                 output.high();
-                output.shutdown(pi4j);
+               pi4j.shutdown(output);
 //            pi4j.shutdown();
 
                 //  pi4j = Pi4J.newAutoContext();  //  Appears the shutdown call effected the
@@ -80,7 +80,7 @@ public class SimpleGpio {
                 String result = input.state().toString();
                 console.println(" Read state : " + result);
 
-                input.shutdown(pi4j);
+                pi4j.shutdown(input);
 
                 //pi4j = Pi4J.newAutoContext();
 
@@ -130,7 +130,7 @@ public class SimpleGpio {
 
             // shutdown Pi4J
             console.println("ATTEMPTING TO SHUTDOWN/TERMINATE THIS PIN");
-            output42.shutdown(pi4j);    // pin set high as .shutdown(DigitalState.HIGH)
+            pi4j.shutdown(output42);    // pin set high as .shutdown(DigitalState.HIGH)
             //pi4j = Pi4J.newAutoContext();
 
             ////////
@@ -157,7 +157,7 @@ public class SimpleGpio {
             console.println(" Alternate input voltage high - low  : " + result5);
 
             Thread.sleep(37000);
-            input5.shutdown(pi4j);
+            pi4j.shutdown(input5);
             //return result;
 
         }

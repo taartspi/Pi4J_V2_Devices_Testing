@@ -97,7 +97,7 @@ public class TestPwm {
         System.out.println("linuxfs pwm OFF");
         hold(3);
 
-        pwm.shutdown(pi4j);
+        pi4j.shutdown(pwm);
         System.out.println("linuxfs pwm SHUTDOWN");
         hold(3);
 
