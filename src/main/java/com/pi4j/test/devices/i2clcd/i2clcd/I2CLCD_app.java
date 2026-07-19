@@ -4,7 +4,6 @@ package com.pi4j.test.devices.i2clcd.i2clcd;
 import com.pi4j.Pi4J;
 import com.pi4j.io.i2c.I2C;
 
-import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
 import com.pi4j.util.Console;
 
 public class I2CLCD_app {
@@ -23,8 +22,7 @@ public class I2CLCD_app {
 
 
 
-            var pi4j = Pi4J.newContextBuilder().add(
-                    LinuxFsI2CProvider.newInstance()).build();
+            var pi4j = Pi4J.newAutoContext();
 
            var i2cDeviceConfig = I2C.newConfigBuilder(pi4j)
                     .bus(1)

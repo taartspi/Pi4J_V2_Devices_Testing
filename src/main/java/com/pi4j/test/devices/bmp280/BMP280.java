@@ -3,7 +3,6 @@ package com.pi4j.test.devices.bmp280;
 import com.pi4j.Pi4J;
 //import com.pi4j.devices.bmp280.BMP280Device;
 //import com.pi4j.devices.bmp280.BMP280DeviceI2C;
-import com.pi4j.plugin.linuxfs.provider.i2c.LinuxFsI2CProvider;
 import com.pi4j.util.Console;
 
 
@@ -33,8 +32,7 @@ public class BMP280 {
         System.setProperty("org.slf4j.simpleLogger.log.com.pi4j.Pi4J", "trace");
        // pi4j = Pi4J.newAutoContext();
         // FFMI2CProviderImpl   LinuxFsI2CProvider
-        var pi4j = Pi4J.newContextBuilder().add(
-                LinuxFsI2CProvider.newInstance()).build();
+        var pi4j = Pi4J.newAutoContext();
 
         // print installed providers
         System.out.println("----------------------------------------------------------");

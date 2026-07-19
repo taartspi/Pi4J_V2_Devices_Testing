@@ -14,8 +14,6 @@ import com.pi4j.util.Console;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-import com.pi4j.plugin.linuxfs.provider.pwm.LinuxFsPwmProvider;
-import com.pi4j.plugin.linuxfs.provider.pwm.LinuxFsPwmProviderImpl;
 
 
 public class PwmTest {
@@ -53,12 +51,11 @@ public class PwmTest {
         final PwmConfig config = PwmConfigBuilder.newInstance (pi4j)
                 .id ("BCM18")
                 .name ("PWM")
-                .address (3) // this.address)  //or 1 LED on gpio13  the second channel
+                .channel(3) // this.address)  //or 1 LED on gpio13  the second channel
                 .pwmType(pinType)
                 .initial(this.duty)
                 .frequency(this.freq)
                 //.busNumber(0)
-                .provider ("linuxfs-pwm") // pigpio   linuxfs-pwm   PwmFFMProviderImpl
                 .shutdown (0)
                 .frequency(this.freq)
                  .build ();

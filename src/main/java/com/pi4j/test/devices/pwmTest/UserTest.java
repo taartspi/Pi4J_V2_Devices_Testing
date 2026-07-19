@@ -4,7 +4,6 @@ import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmType;
-import com.pi4j.plugin.linuxfs.provider.pwm.LinuxFsPwmProviderImpl;
 import com.pi4j.util.Console;
 
 import java.util.Scanner;
@@ -110,7 +109,7 @@ public class UserTest {
 
     private static void initGPIO(int address) {
         var configPwm = Pwm.newConfigBuilder(pi4j)
-                .address(address)
+                .channel(address)
                 .pwmType(PwmType.HARDWARE)
                 .provider("linuxfs-pwm")     // linuxfs-pwm   PwmFFMProvider
                 .initial(50)
