@@ -45,7 +45,7 @@ import com.pi4j.io.gpio.digital.DigitalState;
 public class DigitalOutputExample {
 
     /** Constant <code>DIGITAL_OUTPUT_PIN=4</code> */
-    public static final int DIGITAL_OUTPUT_PIN = 4;
+    public static final int DIGITAL_OUTPUT_PIN = 24; //4;
 
     /**
      * <p>Constructor for DigitalOutputExample.</p>
@@ -80,15 +80,14 @@ public class DigitalOutputExample {
 
         // create a digital input instance using the default digital input provider
         // we will use the PULL_DOWN argument to set the pin pull-down resistance on this GPIO pin
-        var config = DigitalOutput.newConfigBuilder(pi4j)
-                .address(DIGITAL_OUTPUT_PIN)
-                .shutdown(DigitalState.HIGH)
-                .build();
 
-        // get a Digital Input I/O provider from the Pi4J context
-        DigitalOutputProvider digitalOutputProvider = pi4j.provider("gpiod-digital-output");
+        // Or you can use a configuration builder
 
-        var output = digitalOutputProvider.create(config);
+        var outputConfig3 = DigitalOutput.newConfigBuilder()
+                .bcm(DIGITAL_OUTPUT_PIN)
+                .initial(DigitalState.HIGH)
+                .shutdown(DigitalState.HIGH);
+        DigitalOutput output = pi4j.create(outputConfig3);
 
 
         // setup a digital output listener to listen for any state changes on the digital output
@@ -99,6 +98,7 @@ public class DigitalOutputExample {
                 .state(DigitalState.LOW)
                 .state(DigitalState.HIGH)
                 .state(DigitalState.LOW);
+
 
         // lets toggle the digital output state a few times
         output.toggle()

@@ -1,6 +1,6 @@
 module com.pi4j.test.devices {
     requires com.pi4j;
-    requires com.pi4j.devices;
+  //  requires com.pi4j.devices;
 
  // TA   requires com.pi4j.plugin.pigpio;
 
@@ -15,7 +15,6 @@ module com.pi4j.test.devices {
     //requires com.pi4j.plugin.linuxfs;
    // requires com.pi4j.devices;
     requires jdk.unsupported;
-    requires com.pi4j.plugin.linuxfs;
 //ta
   //  requires com.pi4j.plugin.ffm;
 
@@ -24,9 +23,9 @@ module com.pi4j.test.devices {
    // requires com.pi4j.library.gpiod;
 
   //  requires com.pi4j.library.pigpio;
-    requires com.pi4j.library.gpiod;
+   // requires com.pi4j.library.gpiod;
 
-    requires com.pi4j.plugin.gpiod;
+//    requires com.pi4j.plugin.gpiod;
     requires com.pi4j.plugin.ffm;
 
 

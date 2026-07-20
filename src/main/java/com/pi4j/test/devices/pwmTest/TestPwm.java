@@ -109,10 +109,9 @@ public class TestPwm {
 
     private static void initGPIOCM4() {
         var configPwm = Pwm.newConfigBuilder(pi4j)
-                .address(0)
+                .channel(0)
                 .pwmType(PwmType.HARDWARE)
                 //.busNumber(0)
-                .provider("linuxfs-pwm")  // linuxfs-pwm  PwmFFMProviderImpl
                 .initial(0)
               //  .shutdown(0)
                 .build();

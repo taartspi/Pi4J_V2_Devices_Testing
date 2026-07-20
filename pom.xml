@@ -71,10 +71,10 @@
     <properties>
 
         <!-- DEPENDENCY VERSIONS 4.0.0SNAPSHOT  -->
-       <pi4j.version>4.0.0-SNAPSHOT</pi4j.version>
+       <pi4j.version>5.0.0-SNAPSHOT</pi4j.version>
 
 
-        <slf4j.version>2.0.3</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
 
         <!-- PROJECT ENCODING PROPERTIES -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -106,7 +106,7 @@
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-drivers</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -132,20 +132,21 @@
             <artifactId>pi4j-core</artifactId>
             <version>${pi4j.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-plugin-gpiod</artifactId>
             <version>${pi4j.version}</version>
-        </dependency >
+        <dependency >
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-library-gpiod</artifactId>
             <version>${pi4j.version}</version>
-        </dependency >      <dependency>
+        </dependency >
+         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-plugin-pigpio</artifactId>
             <version>${pi4j.version}</version>
-        </dependency>
+        </dependency-->
         <dependency>
              <groupId>org.slf4j</groupId>
              <artifactId>slf4j-api</artifactId>
@@ -157,11 +158,11 @@
             <version>${slf4j.version}</version>
             <!--scope>test</scope-->
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-plugin-linuxfs</artifactId>
             <version>${pi4j.version}</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
