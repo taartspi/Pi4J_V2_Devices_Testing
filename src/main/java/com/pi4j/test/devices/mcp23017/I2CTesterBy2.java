@@ -3,10 +3,9 @@ package com.pi4j.test.devices.mcp23017;
 
 import com.pi4j.Pi4J;
         import com.pi4j.context.Context;
-        import com.pi4j.io.i2c.I2C;
-        import com.pi4j.io.i2c.I2CConfig;
-        import com.pi4j.io.i2c.I2CProvider;
-        import java.io.IOException;
+import com.pi4j.io.i2c.I2CConfigBuilder;
+
+import java.io.IOException;
 
 public class I2CTesterBy2 {
 
@@ -21,10 +20,11 @@ public class I2CTesterBy2 {
     protected static void blink(int address) throws InterruptedException, IOException {
         Context pi4j = Pi4J.newAutoContext();
 
-        I2CProvider i2CProvider = pi4j.provider("linuxfs-i2c");
-        I2CConfig i2cConfig = I2C.newConfigBuilder(pi4j).id("TCA9534").bus(1).device(address).build();
+        var mcp23017Dev = pi4j.create(I2CConfigBuilder.newInstance()
+                .bus(1)
+                .device(0x76));
 
-        try (I2C mcp23017Dev = i2CProvider.create(i2cConfig)) {
+
             System.out.println("I2C is created");
             mcp23017Dev.writeRegister(IODIRA, (byte) 0x00);
             System.out.println("Register A is configured as output");
@@ -39,6 +39,5 @@ public class I2CTesterBy2 {
                 mcp23017Dev.writeRegister(GPIOA, 0x00);
                 Thread.sleep(1000);
             }
-        }
-    }
+      }
 }

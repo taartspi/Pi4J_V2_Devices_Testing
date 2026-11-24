@@ -40,14 +40,13 @@ public class Pi4jTest {
                 .id("SPI" + 0 + "CE  " +0)
                 .name("A/D converter")
                 .bus(0)
-                 .address(0)
+                 .bcm(0)
                 //.channel(5)
                // .chipSelect(SpiChipSelect.CS_10)
                 .baud(Spi.DEFAULT_BAUD)
                 .mode(SpiMode.MODE_0)
                 .readLsbFirst(0)
                 .writeLsbFirst(0)
-                .provider("linuxfs-spi")
                 .build();
         var spi = pi4JContext.create(spiConfig);
 

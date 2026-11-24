@@ -55,7 +55,7 @@ public class GpioTest2 {
         var ledConfig = DigitalOutput.newConfigBuilder(pi4j)
                 .id("my-dout")
                 .name("My LED")
-                .address(MYDOUT)
+                .bcm(MYDOUT)
                 .shutdown(DigitalState.LOW)
                 .initial(DigitalState.HIGH);
 
@@ -70,7 +70,7 @@ public class GpioTest2 {
                 return;
 
             logger.info("Toggling state...");
-            Digital<?, ?, ?> digital = greenBtnRef.get();
+            var digital = greenBtnRef.get();
             if (digital != null && pi4j.hasIO(digital.id())) {
                 logger.info("Shutting down " + digital.id() + "...");
                 pi4j.shutdown(digital.id());

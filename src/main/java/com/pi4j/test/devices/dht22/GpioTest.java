@@ -78,7 +78,7 @@ public class GpioTest {
                 return;
 
             logger.info("Toggling state...");
-            Digital<?, ?, ?> digital = greenBtnRef.get();
+            var digital = greenBtnRef.get();
             if (digital != null && pi4j.hasIO(digital.id())) {
                 logger.info("Shutting down " + digital.id() + "...");
                 pi4j.shutdown(digital.id());

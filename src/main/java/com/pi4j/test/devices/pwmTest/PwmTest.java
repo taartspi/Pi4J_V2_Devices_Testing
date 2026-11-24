@@ -51,7 +51,8 @@ public class PwmTest {
         final PwmConfig config = PwmConfigBuilder.newInstance (pi4j)
                 .id ("BCM18")
                 .name ("PWM")
-                .channel(3) // this.address)  //or 1 LED on gpio13  the second channel
+                .chip(0)
+                .channel(2) // this.address)  //or 1 LED on gpio13  the second channel
                 .pwmType(pinType)
                 .initial(this.duty)
                 .frequency(this.freq)

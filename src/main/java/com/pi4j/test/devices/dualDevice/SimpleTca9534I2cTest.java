@@ -4,8 +4,7 @@ package com.pi4j.test.devices.dualDevice;
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.io.i2c.I2C;
-import com.pi4j.io.i2c.I2CConfig;
-import com.pi4j.io.i2c.I2CProvider;
+import com.pi4j.io.i2c.I2CConfigBuilder;
 
 public class SimpleTca9534I2cTest {
 
@@ -16,9 +15,9 @@ public class SimpleTca9534I2cTest {
 
         Context pi4j = Pi4J.newAutoContext();
         // FFMI2CProviderImpl linuxfs-i2c
-        I2CProvider i2CProvider = pi4j.provider("FFMI2CProviderImpl");
-        I2CConfig i2cConfig = I2C.newConfigBuilder(pi4j).id("TCA9534").bus(1).device(0x3f).build();
-        try (I2C tca9534Dev = i2CProvider.create(i2cConfig)) {
+        var tca9534Dev = pi4j.create(I2CConfigBuilder.newInstance()
+                .bus(1)
+                .device(0x3f));
 
             int config = tca9534Dev.readRegister(TCA9534_REG_ADDR_CFG);
             if (config < 0)
@@ -45,7 +44,6 @@ public class SimpleTca9534I2cTest {
             Thread.sleep(500L);
             currentState = setPin(currentState, 7, tca9534Dev, false);
             Thread.sleep(500L);
-        }
     }
 
     public static byte setPin(byte currentState, int pin, I2C tca9534Dev, boolean high) {

@@ -5,7 +5,6 @@ import com.pi4j.context.Context;
 import com.pi4j.exception.LifecycleException;
 import com.pi4j.io.i2c.I2C;
 import com.pi4j.io.i2c.I2CConfig;
-import com.pi4j.io.i2c.I2CProvider;
 import com.pi4j.util.Console;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
@@ -23,10 +22,9 @@ public class DualDevice {
         this.con = con;
     }
 
-    public int doit(){
+   /* public int doit(){
         int rval = 0;
         // FFMI2CProviderImpl   linuxfs-i2c
-        I2CProvider i2CProvider = pi4j.provider("linuxfs-i2c"); //FFMI2CProviderImpl
 
         I2CConfig i2cConfig20 = I2C.newConfigBuilder(pi4j).id("MPL3115_SEVENTY").bus(1).device(0x70).build();
         I2C dev20 = i2CProvider.create(i2cConfig20);   //MPL3115_SIXTY
@@ -81,6 +79,8 @@ public class DualDevice {
 
         return(rval);
     }
+    */
+
     public static void main(String[] args) throws Exception {
 
         var console = new Console();
@@ -107,7 +107,7 @@ public class DualDevice {
 
 
         DualDevice dd = new DualDevice(pi4j, console);
-        dd.doit();
+ //       dd.doit();
     }
 
 }

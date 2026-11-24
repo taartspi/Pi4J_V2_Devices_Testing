@@ -101,9 +101,9 @@ public class DigitalOutputExample {
 
 
         // lets toggle the digital output state a few times
-        output.toggle()
-                .toggle()
-                .toggle();
+        output.toggle();
+        output.toggle();
+        output.toggle();
 
 
         // another friendly method of setting output state
