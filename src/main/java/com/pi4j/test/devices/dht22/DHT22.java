@@ -64,19 +64,17 @@ public class DHT22 {
         this.outputConfig1 = DigitalOutput.newConfigBuilder(pi4j)
                 .id("Data_Out")
                 .name("Data_Out")
-                .address(this.dataPinNum)
+                .bcm(this.dataPinNum)
                 .shutdown(DigitalState.HIGH)
-                .initial(DigitalState.HIGH)
-                .provider("gpiod-digital-output");
+                .initial(DigitalState.HIGH);
 
 
         this.inputConfig1 = DigitalInput.newConfigBuilder(pi4j)
                 .id("Data_In")
                 .name("Data_In")
-                .address(this.dataPinNum)
+                .bcm(this.dataPinNum)
                 .pull(PullResistance.OFF)
-                .debounce(50L)
-                .provider("gpiod-digital-input");
+                .debounce(50L);
 
 
         this.logger.trace("<<< Exit: init");

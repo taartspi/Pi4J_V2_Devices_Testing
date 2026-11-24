@@ -111,7 +111,6 @@ public class UserTest {
         var configPwm = Pwm.newConfigBuilder(pi4j)
                 .channel(address)
                 .pwmType(PwmType.HARDWARE)
-                .provider("linuxfs-pwm")     // linuxfs-pwm   PwmFFMProvider
                 .initial(50)
                 .frequency(1)
                // ffm .busNumber(42)

@@ -8,7 +8,7 @@ import com.pi4j.context.Context;
 import com.pi4j.context.Context;
 import com.pi4j.io.i2c.I2C;
 import com.pi4j.io.i2c.I2CConfig;
-import com.pi4j.io.i2c.I2CProvider;
+import com.pi4j.io.i2c.I2CConfigBuilder;
 
 public class MCP23017_App {
 
@@ -28,11 +28,11 @@ public class MCP23017_App {
          */
         protected static void reset(int address) throws InterruptedException {
             Context pi4j = Pi4J.newAutoContext();
-            I2CProvider i2CProvider = pi4j.provider("linuxfs-i2c");
-            I2CConfig i2cConfig = I2C.newConfigBuilder(pi4j).id("TCA9534").bus(1).device(address).build();
+            var mcp23017Dev = pi4j.create(I2CConfigBuilder.newInstance()
+                    .bus(1)
+                    .device(0x76));
 
-            try (I2C mcp23017Dev = i2CProvider.create(i2cConfig)) {
-                System.out.println("i2c created");
+                 System.out.println("i2c created");
 
 
                 //configue all PinA output
@@ -108,10 +108,11 @@ public class MCP23017_App {
                 }
                 Thread.sleep(5000);
             }
-        }
+
+
 
         protected static int getAsInteger(String binaryString) {
             return Integer.parseInt(binaryString, 2);
         }
-    }
 
+}

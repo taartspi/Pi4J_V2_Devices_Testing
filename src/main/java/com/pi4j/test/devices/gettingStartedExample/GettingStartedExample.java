@@ -11,9 +11,8 @@ public class GettingStartedExample {
         var pi4j = Pi4J.newAutoContext();
         DigitalOutput output = null;
         var config = DigitalOutput.newConfigBuilder(pi4j)
-                .address(21)
-                .shutdown(DigitalState.HIGH)
-                .provider("gpiod-digital-output");
+                .bcm(21)
+                .shutdown(DigitalState.HIGH);
         try {
             output = pi4j.create(config);
         } catch (Exception e) {

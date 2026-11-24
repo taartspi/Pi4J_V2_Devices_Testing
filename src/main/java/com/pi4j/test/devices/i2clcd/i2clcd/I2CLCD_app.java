@@ -29,7 +29,6 @@ public class I2CLCD_app {
                     .device(0x27)
                     .id("LCD_I2C")
                     .name("LCD_I2C")
-                    .provider("linuxfs-i2c")
                     .build();
 
             _device = pi4j.create(i2cDeviceConfig);

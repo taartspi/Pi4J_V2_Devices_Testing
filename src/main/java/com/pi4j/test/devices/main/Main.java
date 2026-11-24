@@ -32,9 +32,8 @@ import java.util.concurrent.TimeUnit;
 */
             DigitalOutput output = null;
             var outputConfig3 = DigitalOutput.newConfigBuilder(pi4j)
-                    .address(DIGITAL_OUTPUT_PIN)
-                    .shutdown(DigitalState.HIGH)
-                    .provider("gpiod-digital-output");
+                    .bcm(DIGITAL_OUTPUT_PIN)
+                    .shutdown(DigitalState.HIGH);
             try {
                 output = pi4j.create(outputConfig3);
             } catch (Exception e) {
@@ -50,9 +49,9 @@ import java.util.concurrent.TimeUnit;
                     .state(DigitalState.LOW);
 
             // lets toggle the digital output state a few times
-            output.toggle()
-                    .toggle()
-                    .toggle();
+            output.toggle();
+            output.toggle();
+            output.toggle();
 
 
             // another friendly method of setting output state
